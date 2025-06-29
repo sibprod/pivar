@@ -282,7 +282,57 @@
             addLog('Journal effacé - Protections toujours actives');
         }
 
-        // SURVEILLANCE CONTINUE DU PRESSE-PAPIER
+        // DÉTECTION MOBILE ET RESTRICTIONS SPÉCIFIQUES
+        function detectMobileDevice() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTablet = /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent);
+            
+            if (isMobile || isTablet) {
+                addLog('⚠️ APPAREIL MOBILE DÉTECTÉ - Restrictions renforcées activées', 'error');
+                
+                // Interface d'avertissement mobile
+                showNotification('📱 MOBILE DÉTECTÉ - Surveillance renforcée active');
+                
+                // Bloquer l'orientation pour éviter les captures "accidentelles"
+                screen.orientation?.lock?.('portrait').catch(() => {});
+                
+                // Surveillance spéciale mobile
+                startMobileSurveillance();
+                
+                return true;
+            }
+            return false;
+        }
+
+        function startMobileSurveillance() {
+            // Surveillance changements d'orientation (souvent = screenshot)
+            window.addEventListener('orientationchange', function() {
+                addLog('🚨 CHANGEMENT ORIENTATION - Possible tentative capture mobile', 'error');
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('📱 CAPTURE MOBILE DÉTECTÉE - Session PIVAR surveillée - Toute reproduction est interdite');
+                    } catch (err) {}
+                }, 500);
+            });
+
+            // Surveillance perte de focus (commun lors de screenshots mobiles)
+            let focusLossCount = 0;
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    focusLossCount++;
+                    if (focusLossCount > 2) {
+                        addLog(`🚨 MOBILE: ${focusLossCount}e perte de focus - Activité très suspecte`, 'error');
+                        suspiciousActivity += 2;
+                    }
+                }
+            });
+
+            // Détection vibration (certains mobiles vibrent lors de screenshots)
+            if ('vibrate' in navigator) {
+                // Surveillance des patterns de vibration suspects
+                addLog('Surveillance vibration mobile activée', 'info');
+            }
+        }
         let clipboardMonitor;
         
         function startClipboardMonitoring() {
@@ -302,7 +352,63 @@
             }, 2000); // Vérification toutes les 2 secondes
         }
 
-        // Démarrer la surveillance après permission utilisateur
+        // PROTECTION ANTI-SCREENSHOT MOBILE AVANCÉE
+        function addMobileProtections() {
+            // CSS spécial mobile pour rendre les captures difficiles
+            const mobileStyle = document.createElement('style');
+            mobileStyle.innerHTML = `
+                @media screen and (max-width: 768px) {
+                    body::before {
+                        content: "SESSION PIVAR SÉCURISÉE";
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%) rotate(-45deg);
+                        font-size: 4rem;
+                        color: rgba(255, 0, 0, 0.1);
+                        z-index: 9999;
+                        pointer-events: none;
+                        font-weight: bold;
+                    }
+                    
+                    body {
+                        -webkit-touch-callout: none;
+                        -webkit-user-select: none;
+                        -webkit-tap-highlight-color: transparent;
+                    }
+                }
+            `;
+            document.head.appendChild(mobileStyle);
+
+            // Surveillance tactile suspecte
+            let touchCount = 0;
+            document.addEventListener('touchstart', function(e) {
+                touchCount++;
+                if (e.touches.length >= 3) {
+                    addLog('🚨 MOBILE: Geste multi-touch suspect détecté', 'error');
+                    suspiciousActivity++;
+                }
+            });
+
+            // Détection tentatives de zoom (souvent avant screenshot)
+            let lastScale = 1;
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const distance = Math.sqrt(
+                        Math.pow(touch2.pageX - touch1.pageX, 2) +
+                        Math.pow(touch2.pageY - touch1.pageY, 2)
+                    );
+                    
+                    if (Math.abs(distance - lastScale) > 50) {
+                        addLog('🚨 MOBILE: Tentative de zoom détectée - Possible préparation capture', 'error');
+                        suspiciousActivity++;
+                    }
+                    lastScale = distance;
+                }
+            });
+        }
         setTimeout(() => {
             if (navigator.clipboard) {
                 startClipboardMonitoring();
@@ -479,9 +585,17 @@
             }
         }, 1000);
 
-        // Initialisation
+        // INITIALISATION COMPLÈTE DES PROTECTIONS
         window.addEventListener('load', function() {
             addLog('Page chargée - Protections actives', 'success');
+            
+            // Détection et protection mobile
+            const isMobile = detectMobileDevice();
+            if (isMobile) {
+                addMobileProtections();
+                addLog('Protections mobiles spécifiques activées', 'success');
+            }
+            
             updateStatus();
         });
 
