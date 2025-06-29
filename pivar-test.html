@@ -67,9 +67,17 @@
         </div>
 
         <div class="test-zone">
-            <h3>🎯 ZONE DE TEST</h3>
+            <h3>🎯 ZONE DE TEST PRINT SCREEN</h3>
             <p>Appuyez sur la touche <strong>Print Screen</strong> de votre clavier</p>
             <p style="color: #666;">La détection s'affichera ci-dessous</p>
+            
+            <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-radius: 4px;">
+                <strong>📋 Autres tests :</strong><br>
+                • <strong>Ctrl+Alt+Print Screen</strong> → Test capture zone<br>
+                • <strong>Win+Shift+S</strong> → Test outil capture Windows<br>
+                • <strong>Ctrl+C</strong> sur ce texte → Test copie<br>
+                • <strong>Clic-droit</strong> sur ce texte → Test menu contextuel
+            </div>
         </div>
 
         <div>
@@ -106,7 +114,16 @@
         // DÉTECTION PRINT SCREEN MAXIMALE
         document.addEventListener('keydown', function(e) {
             // Log de TOUTES les touches pour diagnostic
-            addLog(`Touche détectée: key="${e.key}" | code="${e.code}" | keyCode=${e.keyCode} | which=${e.which}`, 'info');
+            addLog(`Touche: key="${e.key}" | code="${e.code}" | keyCode=${e.keyCode} | which=${e.which}`, 'info');
+            
+            // DÉTECTION Win+Shift+S (Outil Capture Windows)
+            if (e.metaKey && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                e.stopPropagation();
+                addLog(`🚨 WIN+SHIFT+S DÉTECTÉ ET BLOQUÉ ! (Outil Capture Windows)`, 'error');
+                updateStatus(`✅ Win+Shift+S bloqué !`, 'success');
+                return false;
+            }
             
             // Tentatives de détection Print Screen avec TOUS les codes possibles
             const isPrintScreen = 
@@ -115,14 +132,18 @@
                 e.keyCode === 44 ||
                 e.keyCode === 42 ||
                 e.keyCode === 124 ||
+                e.keyCode === 183 ||
                 e.which === 44 ||
                 e.which === 42 ||
                 e.which === 124 ||
+                e.which === 183 ||
                 e.key === 'Print' ||
                 e.code === 'Print' ||
                 e.code === 'PrintScrn' ||
                 e.key.includes('Print') ||
-                e.code.includes('Print');
+                e.code.includes('Print') ||
+                (e.keyCode >= 42 && e.keyCode <= 47) ||
+                (e.which >= 42 && e.which <= 47);
 
             if (isPrintScreen) {
                 e.preventDefault();
@@ -130,10 +151,10 @@
                 e.stopImmediatePropagation();
                 
                 printScreenDetected = true;
-                const detectionInfo = `key="${e.key}" | code="${e.code}" | keyCode=${e.keyCode}`;
+                const detectionInfo = `key="${e.key}" | code="${e.code}" | keyCode=${e.keyCode} | which=${e.which}`;
                 
                 addLog(`🚨 PRINT SCREEN DÉTECTÉ ET BLOQUÉ !`, 'error');
-                addLog(`Détails: ${detectionInfo}`, 'success');
+                addLog(`Détails complets: ${detectionInfo}`, 'success');
                 
                 updateStatus(`✅ Print Screen détecté et bloqué ! (${detectionInfo})`, 'success');
                 
@@ -141,11 +162,11 @@
                 setTimeout(async () => {
                     try {
                         if (navigator.clipboard && navigator.clipboard.writeText) {
-                            await navigator.clipboard.writeText('🚨 CONTENU PROTÉGÉ PIVAR');
-                            addLog('✅ Presse-papier nettoyé', 'success');
+                            await navigator.clipboard.writeText('🚨 CONTENU PROTÉGÉ PIVAR - Reproduction interdite');
+                            addLog('✅ Presse-papier remplacé par message de protection', 'success');
                         }
                     } catch (err) {
-                        addLog(`❌ Impossible de nettoyer le presse-papier: ${err.message}`, 'error');
+                        addLog(`❌ Impossible de modifier le presse-papier: ${err.message}`, 'error');
                     }
                 }, 100);
                 
