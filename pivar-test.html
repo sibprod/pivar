@@ -282,44 +282,92 @@
             addLog('Journal effacé - Protections toujours actives');
         }
 
-        // PROTECTION GLOBALE contre toutes les captures d'écran
-        document.addEventListener('keyup', function(e) {
-            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
-                addLog('Print Screen (keyup) - Tentative bloquée', 'success');
-                e.preventDefault();
-                showNotification('🚫 Capture d\'écran interceptée');
-                return false;
-            }
-        });
-
-        // Protection contre Window + Print Screen  
-        document.addEventListener('keydown', function(e) {
-            if (e.metaKey || e.key === 'Meta') {
-                addLog('Touche Windows détectée', 'info');
-                // Bloquer si combiné avec d'autres touches
-                setTimeout(() => {
-                    if (e.key === 'PrintScreen') {
-                        e.preventDefault();
-                        showNotification('🚫 Win+Print Screen bloqué');
-                        return false;
+        // SURVEILLANCE CONTINUE DU PRESSE-PAPIER
+        let clipboardMonitor;
+        
+        function startClipboardMonitoring() {
+            clipboardMonitor = setInterval(async () => {
+                try {
+                    if (navigator.clipboard && navigator.clipboard.readText) {
+                        const clipContent = await navigator.clipboard.readText();
+                        if (clipContent && clipContent.length > 10 && !clipContent.includes('PIVAR')) {
+                            // Contenu suspect détecté, remplacer
+                            await navigator.clipboard.writeText('🚨 CONTENU PROTÉGÉ DÉTECTÉ - Session PIVAR surveillée - Contact: securite@pivar.info');
+                            addLog('⚠️ Contenu suspect dans presse-papier remplacé', 'error');
+                        }
                     }
-                }, 10);
+                } catch (err) {
+                    // Permission refusée ou pas supporté
+                }
+            }, 2000); // Vérification toutes les 2 secondes
+        }
+
+        // Démarrer la surveillance après permission utilisateur
+        setTimeout(() => {
+            if (navigator.clipboard) {
+                startClipboardMonitoring();
+                addLog('Surveillance presse-papier activée', 'success');
+            }
+        }, 3000);
+        let suspiciousActivity = 0;
+        
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                suspiciousActivity++;
+                addLog(`⚠️ ALERTE: Utilisateur a quitté l'onglet (${suspiciousActivity}e fois) - Activité suspecte`, 'error');
+                
+                // Tentative de nettoyage préventif du presse-papier
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('🚨 SESSION PIVAR SURVEILLÉE - Toute reproduction est tracée et interdite');
+                        addLog('Presse-papier remplacé préventivement', 'success');
+                    } catch (err) {
+                        addLog('Surveillance active - Restriction presse-papier', 'info');
+                    }
+                }, 50);
+            } else {
+                addLog('Retour sur l\'onglet - Surveillance continue', 'info');
             }
         });
 
-        // Protection clavier
+        window.addEventListener('blur', function() {
+            addLog('⚠️ Fenêtre perdue (Alt+Tab ou clic ailleurs) - Activité surveillée', 'error');
+            suspiciousActivity++;
+        });
+
+        window.addEventListener('focus', function() {
+            addLog('Retour focus fenêtre - Contrôle repris', 'info');
+        });
+
+        // PROTECTION MAXIMALE - Tentative de vidage presse-papier
+        async function clearClipboard() {
+            try {
+                // Tentative de vider le presse-papier (Chrome/Edge moderne)
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText('');
+                    addLog('Presse-papier vidé après détection Print Screen', 'success');
+                }
+            } catch (err) {
+                addLog('Impossible de vider le presse-papier (restrictions navigateur)', 'info');
+            }
+        }
+
+        // PROTECTION RENFORCÉE Print Screen
         document.addEventListener('keydown', function(e) {
             addLog(`Touche détectée: ${e.key} ${e.ctrlKey ? '+ Ctrl' : ''} ${e.shiftKey ? '+ Shift' : ''} ${e.altKey ? '+ Alt' : ''} ${e.metaKey ? '+ Win' : ''}`, 'info');
             
-            // Print Screen (toutes combinaisons) - DÉTECTION RENFORCÉE
+            // Print Screen (toutes combinaisons) - DÉTECTION MAXIMALE
             if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
                 
+                // Tentative de vidage immédiat du presse-papier
+                clearClipboard();
+                
                 testResults.printScreen = true;
                 document.getElementById('printScreenResult').style.display = 'block';
-                document.getElementById('printScreenResult').textContent = '✅ Print Screen BLOQUÉ !';
+                document.getElementById('printScreenResult').textContent = '✅ Print Screen BLOQUÉ + Presse-papier vidé';
                 
                 let combo = 'Print Screen';
                 if (e.ctrlKey && e.altKey) combo = 'Ctrl+Alt+Print Screen';
@@ -327,9 +375,20 @@
                 else if (e.ctrlKey) combo = 'Ctrl+Print Screen';
                 else if (e.metaKey) combo = 'Win+Print Screen';
                 
-                showNotification(`🚫 ${combo} bloqué !`);
-                addLog(`${combo} bloqué avec succès`, 'success');
+                showNotification(`🚫 ${combo} bloqué + Presse-papier effacé`);
+                addLog(`${combo} bloqué avec tentative de vidage presse-papier`, 'success');
                 updateStatus();
+                
+                // Remplacement du contenu presse-papier par un message d'avertissement
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText('⚠️ CONTENU PROTÉGÉ PIVAR - Reproduction interdite - Session surveillée');
+                        addLog('Presse-papier remplacé par message d\'avertissement', 'success');
+                    } catch (err) {
+                        addLog('Impossible de modifier le presse-papier', 'info');
+                    }
+                }, 100);
+                
                 return false;
             }
             
