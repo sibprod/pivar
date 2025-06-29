@@ -471,6 +471,8 @@
 
         // Protection clavier avec tracking
         document.addEventListener('keydown', function(e) {
+            console.log('Touche pressée:', e.key, 'Code:', e.code, 'KeyCode:', e.keyCode);
+            
             // Win+Shift+S (Outil Capture Windows)
             if (e.metaKey && e.shiftKey && e.key === 'S') {
                 e.preventDefault();
@@ -480,10 +482,18 @@
                 return false;
             }
 
-            // Print Screen (toutes combinaisons)
-            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
+            // Print Screen - DÉTECTION COMPLÈTE avec tous les codes possibles
+            if (e.key === 'PrintScreen' || 
+                e.code === 'PrintScreen' || 
+                e.keyCode === 44 || 
+                e.keyCode === 42 ||
+                e.key === 'Print' ||
+                e.code === 'PrintScrn' ||
+                (e.keyCode >= 42 && e.keyCode <= 47 && (e.key.includes('Print') || e.code.includes('Print')))) {
+                
                 e.preventDefault();
                 e.stopPropagation();
+                e.stopImmediatePropagation();
                 
                 let combo = 'Print Screen';
                 if (e.ctrlKey && e.altKey) combo = 'Ctrl+Alt+Print Screen';
@@ -491,21 +501,46 @@
                 else if (e.ctrlKey) combo = 'Ctrl+Print Screen';
                 else if (e.metaKey) combo = 'Win+Print Screen';
                 
-                logSecurityEvent('PRINT_SCREEN_BLOCKED', combo);
-                showSecurityNotice(`🚫 ${combo} bloqué`);
+                logSecurityEvent('PRINT_SCREEN_BLOCKED', `${combo} - Key: ${e.key}, Code: ${e.code}, KeyCode: ${e.keyCode}`);
+                showSecurityNotice(`🚫 ${combo} bloqué et tracé`);
+                
+                // Tentative de nettoyage presse-papier
+                setTimeout(async () => {
+                    try {
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            await navigator.clipboard.writeText('🚨 CONTENU PROTÉGÉ PIVAR - Reproduction interdite');
+                            console.log('Presse-papier nettoyé après Print Screen');
+                        }
+                    } catch (err) {
+                        console.log('Impossible de nettoyer le presse-papier:', err);
+                    }
+                }, 100);
+                
                 return false;
             }
 
-            // Autres raccourcis
+            // F12 et outils développeur
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                e.stopPropagation();
+                logSecurityEvent('DEVTOOLS_SHORTCUT_BLOCKED', `${e.key} avec modificateurs`);
+                showSecurityNotice('🔧 Raccourci outils développeur bloqué');
+                return false;
+            }
+
+            // Autres raccourcis dangereux (SAUF dans champs de saisie)
             const isInInteractiveElement = e.target.matches('input, textarea, select, button, [contenteditable="true"]') ||
                                          e.target.closest('iframe');
 
             if (!isInInteractiveElement) {
-                if ((e.ctrlKey && e.key === 'c') || (e.ctrlKey && e.key === 'a') || 
-                    (e.key === 'F12') || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                // Ctrl+C, Ctrl+A, Ctrl+S, etc.
+                if ((e.ctrlKey && e.key === 'c') || 
+                    (e.ctrlKey && e.key === 'a') || 
+                    (e.ctrlKey && e.key === 's') ||
+                    (e.ctrlKey && e.key === 'v')) {
                     e.preventDefault();
-                    logSecurityEvent('SHORTCUT_BLOCKED', `${e.key} avec modificateurs`);
-                    showSecurityNotice('⚠️ Raccourci bloqué');
+                    logSecurityEvent('SHORTCUT_BLOCKED', `Ctrl+${e.key.toUpperCase()} bloqué hors champ de saisie`);
+                    showSecurityNotice('⚠️ Raccourci bloqué - Saisie autorisée dans les champs');
                     return false;
                 }
             }
