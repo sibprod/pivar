@@ -135,8 +135,8 @@
         <div class="test-section">
             <h3>🧪 Tests Manuels</h3>
             
-            <h4>Test 1: Print Screen</h4>
-            <p>Appuyez sur la touche <code>Print Screen</code></p>
+            <h4>Test 1: Print Screen (toutes combinaisons)</h4>
+            <p>Testez : <code>Print Screen</code>, <code>Ctrl+Alt+Print Screen</code>, <code>Alt+Print Screen</code></p>
             <div id="printScreenResult" class="result">❌ Pas encore testé</div>
             
             <h4>Test 2: Copie de texte</h4>
@@ -163,6 +163,7 @@
         <div class="test-section">
             <h3>🧰 Tests Automatiques</h3>
             <button class="test-button" onclick="testPrintScreen()">Simuler Print Screen</button>
+            <button class="test-button" onclick="testCtrlAltPrintScreen()">Simuler Ctrl+Alt+PrtSc</button>
             <button class="test-button" onclick="testCopyEvent()">Simuler Ctrl+C</button>
             <button class="test-button" onclick="testRightClick()">Simuler Clic-droit</button>
             <button class="test-button" onclick="testF12()">Simuler F12</button>
@@ -242,7 +243,18 @@
         // Tests automatiques
         function testPrintScreen() {
             addLog('Test automatique Print Screen lancé');
-            const event = new KeyboardEvent('keydown', { key: 'PrintScreen' });
+            const event = new KeyboardEvent('keydown', { key: 'PrintScreen', code: 'PrintScreen' });
+            document.dispatchEvent(event);
+        }
+
+        function testCtrlAltPrintScreen() {
+            addLog('Test automatique Ctrl+Alt+Print Screen lancé');
+            const event = new KeyboardEvent('keydown', { 
+                key: 'PrintScreen', 
+                code: 'PrintScreen',
+                ctrlKey: true,
+                altKey: true
+            });
             document.dispatchEvent(event);
         }
 
@@ -265,28 +277,71 @@
         }
 
         function clearLog() {
-            document.getElementById('logArea').innerHTML = '';
-            addLog('Journal effacé');
+            const logArea = document.getElementById('logArea');
+            logArea.innerHTML = '';
+            addLog('Journal effacé - Protections toujours actives');
         }
 
-        // PROTECTIONS ACTIVÉES
-        addLog('Initialisation du système de protection PIVAR', 'info');
+        // PROTECTION GLOBALE contre toutes les captures d'écran
+        document.addEventListener('keyup', function(e) {
+            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
+                addLog('Print Screen (keyup) - Tentative bloquée', 'success');
+                e.preventDefault();
+                showNotification('🚫 Capture d\'écran interceptée');
+                return false;
+            }
+        });
+
+        // Protection contre Window + Print Screen  
+        document.addEventListener('keydown', function(e) {
+            if (e.metaKey || e.key === 'Meta') {
+                addLog('Touche Windows détectée', 'info');
+                // Bloquer si combiné avec d'autres touches
+                setTimeout(() => {
+                    if (e.key === 'PrintScreen') {
+                        e.preventDefault();
+                        showNotification('🚫 Win+Print Screen bloqué');
+                        return false;
+                    }
+                }, 10);
+            }
+        });
 
         // Protection clavier
         document.addEventListener('keydown', function(e) {
-            addLog(`Touche détectée: ${e.key} ${e.ctrlKey ? '+ Ctrl' : ''} ${e.shiftKey ? '+ Shift' : ''}`, 'info');
+            addLog(`Touche détectée: ${e.key} ${e.ctrlKey ? '+ Ctrl' : ''} ${e.shiftKey ? '+ Shift' : ''} ${e.altKey ? '+ Alt' : ''} ${e.metaKey ? '+ Win' : ''}`, 'info');
             
-            // Print Screen
-            if (e.key === 'PrintScreen') {
+            // Print Screen (toutes combinaisons) - DÉTECTION RENFORCÉE
+            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
                 e.preventDefault();
                 e.stopPropagation();
+                e.stopImmediatePropagation();
+                
                 testResults.printScreen = true;
                 document.getElementById('printScreenResult').style.display = 'block';
                 document.getElementById('printScreenResult').textContent = '✅ Print Screen BLOQUÉ !';
-                showNotification('🚫 Capture d\'écran bloquée !');
-                addLog('Print Screen bloqué avec succès', 'success');
+                
+                let combo = 'Print Screen';
+                if (e.ctrlKey && e.altKey) combo = 'Ctrl+Alt+Print Screen';
+                else if (e.altKey) combo = 'Alt+Print Screen';
+                else if (e.ctrlKey) combo = 'Ctrl+Print Screen';
+                else if (e.metaKey) combo = 'Win+Print Screen';
+                
+                showNotification(`🚫 ${combo} bloqué !`);
+                addLog(`${combo} bloqué avec succès`, 'success');
                 updateStatus();
                 return false;
+            }
+            
+            // BLOCAGE PRÉVENTIF des combinaisons dangereuses
+            if ((e.ctrlKey && e.altKey) || (e.altKey && e.key !== 'Tab')) {
+                if (e.key !== 'Tab' && e.key !== 'F4') {  // Autoriser Alt+Tab et Alt+F4
+                    addLog(`Combinaison suspecte détectée: ${e.key} avec modificateurs`, 'success');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showNotification('🚫 Combinaison de touches bloquée');
+                    return false;
+                }
             }
             
             // Ctrl+C (si pas dans un champ)
@@ -379,4 +434,3 @@
     </script>
 </body>
 </html>
-
