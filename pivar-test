@@ -1,1 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIVAR - Test Debug Protections</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+
+        .debug-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+
+        .test-button {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .test-button:hover {
+            background: #218838;
+        }
+
+        .result {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .notification-area {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            z-index: 10000;
+        }
+
+        .notification {
+            background: #28a745;
+            color: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transform: translateX(320px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .test-text {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>🛡️ PIVAR - Test Debug Protections</h1>
+        <p><strong>Objectif :</strong> Tester chaque protection individuellement</p>
+
+        <div class="test-section">
+            <h3>📊 Status Système</h3>
+            <div id="systemStatus">Initialisation...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Tests Manuels</h3>
+            
+            <h4>Test 1: Print Screen</h4>
+            <p>Appuyez sur la touche <code>Print Screen</code></p>
+            <div id="printScreenResult" class="result">❌ Pas encore testé</div>
+            
+            <h4>Test 2: Copie de texte</h4>
+            <div class="test-text">
+                📝 TEXTE À COPIER : Sélectionnez ce texte et appuyez Ctrl+C
+            </div>
+            <div id="copyResult" class="result">❌ Pas encore testé</div>
+            
+            <h4>Test 3: Clic-droit</h4>
+            <div class="test-text">
+                👆 ZONE CLIC-DROIT : Faites un clic-droit ici
+            </div>
+            <div id="rightClickResult" class="result">❌ Pas encore testé</div>
+            
+            <h4>Test 4: Outils développeur</h4>
+            <p>Appuyez sur <code>F12</code></p>
+            <div id="devToolsResult" class="result">❌ Pas encore testé</div>
+            
+            <h4>Test 5: Saisie normale (doit fonctionner)</h4>
+            <input type="text" placeholder="Tapez ici - ceci doit fonctionner normalement">
+            <textarea placeholder="Zone de texte - ceci doit aussi fonctionner"></textarea>
+        </div>
+
+        <div class="test-section">
+            <h3>🧰 Tests Automatiques</h3>
+            <button class="test-button" onclick="testPrintScreen()">Simuler Print Screen</button>
+            <button class="test-button" onclick="testCopyEvent()">Simuler Ctrl+C</button>
+            <button class="test-button" onclick="testRightClick()">Simuler Clic-droit</button>
+            <button class="test-button" onclick="testF12()">Simuler F12</button>
+            <button class="test-button" onclick="clearLog()">Effacer Log</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Journal des Événements</h3>
+            <div id="logArea" class="log-area"></div>
+        </div>
+    </div>
+
+    <div class="notification-area" id="notificationArea"></div>
+
+    <script>
+        // Variables globales
+        let testResults = {
+            printScreen: false,
+            copy: false,
+            rightClick: false,
+            devTools: false
+        };
+
+        // Fonction de log
+        function addLog(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logArea.appendChild(logEntry);
+            logArea.scrollTop = logArea.scrollHeight;
+            console.log(`PIVAR Debug: ${message}`);
+        }
+
+        // Fonction de notification
+        function showNotification(message, type = 'success') {
+            const notificationArea = document.getElementById('notificationArea');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = type === 'error' ? '#dc3545' : '#28a745';
+            notification.textContent = message;
+            
+            notificationArea.appendChild(notification);
+            
+            // Animation d'entrée
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Suppression automatique
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notificationArea.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            addLog(`Notification affichée: ${message}`, 'success');
+        }
+
+        // Mise à jour du statut
+        function updateStatus() {
+            const status = document.getElementById('systemStatus');
+            const passed = Object.values(testResults).filter(r => r).length;
+            const total = Object.keys(testResults).length;
+            
+            status.innerHTML = `
+                <strong>Tests réussis:</strong> ${passed}/${total}<br>
+                <strong>Print Screen:</strong> ${testResults.printScreen ? '✅' : '❌'}<br>
+                <strong>Copie:</strong> ${testResults.copy ? '✅' : '❌'}<br>
+                <strong>Clic-droit:</strong> ${testResults.rightClick ? '✅' : '❌'}<br>
+                <strong>DevTools:</strong> ${testResults.devTools ? '✅' : '❌'}
+            `;
+        }
+
+        // Tests automatiques
+        function testPrintScreen() {
+            addLog('Test automatique Print Screen lancé');
+            const event = new KeyboardEvent('keydown', { key: 'PrintScreen' });
+            document.dispatchEvent(event);
+        }
+
+        function testCopyEvent() {
+            addLog('Test automatique Ctrl+C lancé');
+            const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true });
+            document.dispatchEvent(event);
+        }
+
+        function testRightClick() {
+            addLog('Test automatique clic-droit lancé');
+            const event = new MouseEvent('contextmenu', { bubbles: true });
+            document.querySelector('.test-text').dispatchEvent(event);
+        }
+
+        function testF12() {
+            addLog('Test automatique F12 lancé');
+            const event = new KeyboardEvent('keydown', { key: 'F12' });
+            document.dispatchEvent(event);
+        }
+
+        function clearLog() {
+            document.getElementById('logArea').innerHTML = '';
+            addLog('Journal effacé');
+        }
+
+        // PROTECTIONS ACTIVÉES
+        addLog('Initialisation du système de protection PIVAR', 'info');
+
+        // Protection clavier
+        document.addEventListener('keydown', function(e) {
+            addLog(`Touche détectée: ${e.key} ${e.ctrlKey ? '+ Ctrl' : ''} ${e.shiftKey ? '+ Shift' : ''}`, 'info');
+            
+            // Print Screen
+            if (e.key === 'PrintScreen') {
+                e.preventDefault();
+                e.stopPropagation();
+                testResults.printScreen = true;
+                document.getElementById('printScreenResult').style.display = 'block';
+                document.getElementById('printScreenResult').textContent = '✅ Print Screen BLOQUÉ !';
+                showNotification('🚫 Capture d\'écran bloquée !');
+                addLog('Print Screen bloqué avec succès', 'success');
+                updateStatus();
+                return false;
+            }
+            
+            // Ctrl+C (si pas dans un champ)
+            if (e.ctrlKey && e.key === 'c') {
+                const isInInput = e.target.matches('input, textarea, [contenteditable="true"]');
+                if (!isInInput) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    testResults.copy = true;
+                    document.getElementById('copyResult').style.display = 'block';
+                    document.getElementById('copyResult').textContent = '✅ Copie BLOQUÉE !';
+                    showNotification('📋 Copie de texte bloquée !');
+                    addLog('Ctrl+C bloqué avec succès (hors champ de saisie)', 'success');
+                    updateStatus();
+                    return false;
+                } else {
+                    addLog('Ctrl+C autorisé dans champ de saisie', 'info');
+                }
+            }
+            
+            // F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                e.stopPropagation();
+                testResults.devTools = true;
+                document.getElementById('devToolsResult').style.display = 'block';
+                document.getElementById('devToolsResult').textContent = '✅ F12 BLOQUÉ !';
+                showNotification('🔧 Outils développeur bloqués !');
+                addLog('F12 bloqué avec succès', 'success');
+                updateStatus();
+                return false;
+            }
+        }, true);
+
+        // Protection clic-droit
+        document.addEventListener('contextmenu', function(e) {
+            addLog(`Clic-droit détecté sur: ${e.target.tagName} ${e.target.className}`, 'info');
+            
+            const isInInput = e.target.matches('input, textarea, select');
+            if (!isInInput) {
+                e.preventDefault();
+                testResults.rightClick = true;
+                document.getElementById('rightClickResult').style.display = 'block';
+                document.getElementById('rightClickResult').textContent = '✅ Clic-droit BLOQUÉ !';
+                showNotification('👆 Menu contextuel bloqué !');
+                addLog('Clic-droit bloqué avec succès', 'success');
+                updateStatus();
+                return false;
+            } else {
+                addLog('Clic-droit autorisé dans champ de saisie', 'info');
+            }
+        });
+
+        // Protection sélection
+        document.addEventListener('selectstart', function(e) {
+            if (e.target.closest('.test-text')) {
+                e.preventDefault();
+                addLog('Sélection de texte bloquée', 'success');
+                return false;
+            }
+        });
+
+        // Surveillance DevTools
+        let devToolsDetected = false;
+        setInterval(function() {
+            const heightDiff = window.outerHeight - window.innerHeight;
+            const widthDiff = window.outerWidth - window.innerWidth;
+            
+            if ((heightDiff > 200 || widthDiff > 200) && !devToolsDetected) {
+                devToolsDetected = true;
+                showNotification('🔍 DevTools détectés par surveillance !');
+                addLog('DevTools détectés par surveillance des dimensions', 'success');
+            } else if (heightDiff <= 200 && widthDiff <= 200 && devToolsDetected) {
+                devToolsDetected = false;
+                addLog('DevTools fermés (surveillance)', 'info');
+            }
+        }, 1000);
+
+        // Initialisation
+        window.addEventListener('load', function() {
+            addLog('Page chargée - Protections actives', 'success');
+            updateStatus();
+        });
+
+        // Test de bienvenue
+        setTimeout(function() {
+            showNotification('🛡️ Système de protection initialisé');
+            addLog('Message de bienvenue affiché', 'info');
+        }, 2000);
+    </script>
+</body>
+</html>
 
