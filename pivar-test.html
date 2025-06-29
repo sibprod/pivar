@@ -137,7 +137,7 @@
                 TENTATIVE NON AUTORISÉE
             </div>
             <div class="countdown">
-                Fermeture dans <span id="countdown">5</span>s
+                Continuez votre évaluation dans <span id="countdown">5</span>s
             </div>
         </div>
     </div>
@@ -185,9 +185,9 @@
             showOverlay('TEST MANUEL');
         }
 
-        // DÉTECTION SIMPLE DE TOUTES LES TOUCHES
+        // DÉTECTION RENFORCÉE DE TOUTES LES TOUCHES
         document.addEventListener('keydown', function(e) {
-            addLog(`Touche: ${e.key} | Ctrl: ${e.ctrlKey} | Alt: ${e.altKey} | Code: ${e.keyCode}`);
+            addLog(`Touche: ${e.key} | Ctrl: ${e.ctrlKey} | Alt: ${e.altKey} | Code: ${e.keyCode} | Which: ${e.which} | Location: ${e.location}`);
             
             // Si c'est dans un champ de saisie, autoriser
             const isInInput = e.target.matches('input, textarea, select');
@@ -199,30 +199,72 @@
             // TESTER TOUTES LES TOUCHES SUSPECTES
             let violationType = null;
             
+            // Print Screen - DÉTECTION ÉLARGIE MAXIMALE
+            const isPrintScreen = 
+                e.key === 'PrintScreen' ||
+                e.code === 'PrintScreen' ||
+                e.key === 'Print' ||
+                e.code === 'Print' ||
+                e.keyCode === 44 ||
+                e.keyCode === 42 ||
+                e.keyCode === 124 ||
+                e.keyCode === 183 ||
+                e.which === 44 ||
+                e.which === 42 ||
+                e.which === 124 ||
+                e.which === 183 ||
+                // Codes étendus pour différents claviers
+                (e.keyCode >= 40 && e.keyCode <= 50) ||
+                (e.which >= 40 && e.which <= 50) ||
+                // Touches sans nom mais dans la zone Print Screen
+                (!e.key && e.keyCode > 40 && e.keyCode < 200) ||
+                (e.key === 'Unidentified' && e.keyCode > 40) ||
+                // Détection par position (après F12)
+                (e.location === 0 && e.keyCode > 122 && e.keyCode < 130) ||
+                // Noms alternatifs
+                e.key?.includes('Print') ||
+                e.code?.includes('Print') ||
+                e.key?.includes('Impr') ||
+                e.code?.includes('Impr');
+
+            if (isPrintScreen) {
+                violationType = `CAPTURE D'ÉCRAN INTERDITE`;
+                addLog(`🎯 PRINT SCREEN DÉTECTÉ! Key: "${e.key}", Code: ${e.keyCode}, Which: ${e.which}`);
+            }
+            
             // Ctrl + quelque chose
-            if (e.ctrlKey) {
-                violationType = `CTRL+${e.key.toUpperCase()} INTERDIT`;
+            else if (e.ctrlKey) {
+                violationType = `CTRL+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
             }
             
             // Alt + quelque chose
             else if (e.altKey) {
-                violationType = `ALT+${e.key.toUpperCase()} INTERDIT`;
+                violationType = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
             }
             
-            // Touches F
-            else if (e.key.startsWith('F') && e.key !== 'F5') {
+            // Touches F (sauf F5)
+            else if (e.key?.startsWith('F') && e.key !== 'F5') {
                 violationType = `TOUCHE ${e.key} INTERDITE`;
             }
             
-            // Print Screen
-            else if (e.key === 'PrintScreen' || e.keyCode === 44 || e.code === 'PrintScreen') {
-                violationType = `CAPTURE D'ÉCRAN INTERDITE`;
+            // WIN + quelque chose
+            else if (e.metaKey) {
+                violationType = `WIN+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
+            }
+            
+            // TOUCHES MYSTÉRIEUSES (sans nom mais avec code suspect)
+            else if (!e.key || e.key === 'Unidentified' || e.key === '') {
+                if (e.keyCode > 40 && e.keyCode < 200) {
+                    violationType = `TOUCHE MYSTÉRIEUSE INTERDITE (Code: ${e.keyCode})`;
+                    addLog(`🔍 TOUCHE MYSTÉRIEUSE: Code ${e.keyCode} sans nom`);
+                }
             }
             
             // Si violation détectée
             if (violationType) {
                 e.preventDefault();
                 e.stopPropagation();
+                e.stopImmediatePropagation();
                 showOverlay(violationType);
                 return false;
             }
@@ -250,7 +292,85 @@
             }
         });
 
-        // Initialisation
+        // DÉTECTION MOBILE - COMPORTEMENTS SUSPECTS
+        let mobileActivity = {
+            tabSwitches: 0,
+            quickReturns: 0,
+            suspiciousGestures: 0,
+            orientationChanges: 0
+        };
+
+        // Détection appareil mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            addLog('📱 APPAREIL MOBILE DÉTECTÉ - Surveillance comportementale activée');
+
+            // 1. SURVEILLANCE CHANGEMENTS D'ONGLET
+            let lastVisibilityChange = 0;
+            document.addEventListener('visibilitychange', function() {
+                const now = Date.now();
+                
+                if (document.hidden) {
+                    mobileActivity.tabSwitches++;
+                    lastVisibilityChange = now;
+                    addLog(`📱 Sortie d'onglet (${mobileActivity.tabSwitches}e fois)`);
+                    
+                    // Si trop de sorties = suspect
+                    if (mobileActivity.tabSwitches >= 3) {
+                        showOverlay('ACTIVITÉ MOBILE SUSPECTE - MULTIPLES SORTIES D\'ONGLET');
+                    }
+                } else {
+                    const timeDiff = now - lastVisibilityChange;
+                    if (timeDiff < 3000 && mobileActivity.tabSwitches >= 2) {
+                        mobileActivity.quickReturns++;
+                        addLog(`📱 Retour rapide suspect (${timeDiff}ms)`);
+                        showOverlay('PATTERN MOBILE SUSPECT - RETOUR RAPIDE DÉTECTÉ');
+                    }
+                }
+            });
+
+            // 2. DÉTECTION GESTES MULTI-TOUCH
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length >= 3) {
+                    mobileActivity.suspiciousGestures++;
+                    addLog(`📱 Geste multi-touch suspect (${e.touches.length} doigts)`);
+                    showOverlay('GESTE MOBILE INTERDIT - CAPTURE SUSPECTÉE');
+                    e.preventDefault();
+                }
+            });
+
+            // 3. SURVEILLANCE ORIENTATION (souvent = screenshot)
+            window.addEventListener('orientationchange', function() {
+                mobileActivity.orientationChanges++;
+                addLog(`📱 Changement orientation (${mobileActivity.orientationChanges}e fois)`);
+                showOverlay('CHANGEMENT ORIENTATION - CAPTURE SUSPECTÉE');
+            });
+
+            // 4. DÉTECTION VIBRATION (certains mobiles vibrent lors de screenshots)
+            if ('vibrate' in navigator) {
+                // On peut pas détecter la vibration, mais on peut en créer une pour dissuader
+                setInterval(() => {
+                    if (mobileActivity.tabSwitches >= 2) {
+                        navigator.vibrate([200, 100, 200]); // Vibration dissuasive
+                    }
+                }, 30000);
+            }
+
+            // 5. SURVEILLANCE PAGE FOCUS (perte/retour rapide)
+            let focusLossCount = 0;
+            window.addEventListener('blur', function() {
+                focusLossCount++;
+                if (focusLossCount >= 3) {
+                    showOverlay('PERTE DE FOCUS RÉPÉTÉE - ACTIVITÉ SUSPECTE');
+                }
+            });
+
+            // 6. ALERTE PRÉVENTIVE MOBILE
+            setTimeout(() => {
+                showOverlay('MODE MOBILE - SURVEILLANCE ACTIVE<br>TOUTE CAPTURE SERA DÉTECTÉE');
+            }, 5000);
+        }
         window.addEventListener('load', function() {
             addLog('🛡️ Système PIVAR initialisé - Version simplifiée');
             addLog('Testez les touches pour voir les overlays');
