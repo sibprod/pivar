@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIVAR - Test Print Screen</title>
+    <title>PIVAR - Test Overlay Fonctionnel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
             background: #f5f5f5;
         }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -18,15 +19,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .alert {
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        
         .test-zone {
             background: #e9ecef;
             padding: 20px;
@@ -34,17 +27,12 @@
             border-radius: 4px;
             text-align: center;
             border: 2px dashed #6c757d;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
-        .log-area {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            height: 300px;
-            overflow-y: scroll;
-            font-family: monospace;
-            font-size: 12px;
-            margin-top: 20px;
-        }
+        
         input, textarea {
             width: 100%;
             padding: 10px;
@@ -52,198 +40,193 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            height: 200px;
+            overflow-y: scroll;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        /* OVERLAY MASSIF */
+        .violation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(220, 53, 69, 0.98);
+            color: white;
+            display: none;
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .violation-content {
+            background: #dc3545;
+            padding: 40px;
+            border-radius: 15px;
+            border: 5px solid #fff;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            max-width: 600px;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .violation-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .violation-message {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            color: #ffeb3b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛡️ PIVAR - Test Détection Print Screen</h1>
+        <h1>🛡️ PIVAR - Test Overlay Simple</h1>
         
-        <div class="alert alert-info">
-            <strong>Instructions :</strong> Appuyez sur votre touche Print Screen et regardez les logs ci-dessous.
-        </div>
-
-        <div id="status" class="alert alert-info">
-            <strong>Status :</strong> En attente du test Print Screen...
+        <div style="background: #d4edda; padding: 15px; border-radius: 4px; margin: 20px 0;">
+            <strong>🎯 OBJECTIF :</strong> Vérifier que l'overlay fonctionne sur TOUTES les touches
         </div>
 
         <div class="test-zone">
-            <h3>🎯 SYSTÈME D'ALERTE MASSIVE - DESKTOP + MOBILE</h3>
-            <p><strong>💥 COUVERTURE COMPLÈTE :</strong> Protection intelligente sur tous appareils !</p>
-            
-            <div style="margin: 20px 0; padding: 15px; background: #d1ecf1; border-radius: 4px; border: 1px solid #bee5eb; color: #0c5460;">
-                <strong>🖥️ DESKTOP - OVERLAY POUR :</strong><br>
-                • <strong>Print Screen</strong> simple ou combiné → Overlay massif<br>
-                • <strong>Ctrl+C, Ctrl+A, Ctrl+Alt+Print Screen</strong> → Alerte plein écran<br>
-                • <strong>F12, outils développeur</strong> → Avertissement sanctions<br><br>
-                
-                <strong>📱 MOBILE - DÉTECTION COMPORTEMENTALE :</strong><br>
-                • <strong>Changements d'onglet</strong> fréquents → Pattern suspect<br>
-                • <strong>Retours rapides</strong> (< 5s) → Possible screenshot<br>
-                • <strong>Gestes multi-touch</strong> (3+ doigts) → Alerte<br>
-                • <strong>Changement orientation</strong> → Capture suspectée<br><br>
-                
-                <strong>🧪 TESTEZ SUR MOBILE :</strong><br>
-                • Quittez l'onglet 3+ fois → Overlay "ACTIVITÉ SUSPECTE"<br>
-                • Touchez avec 3+ doigts → Overlay "GESTE SUSPECT"<br>
-                • Tournez l'écran → Overlay "ORIENTATION DÉTECTÉE"
-            </div>
+            <h3>🧪 ZONE DE TEST</h3>
+            <p><strong>Essayez N'IMPORTE QUELLE TOUCHE ici !</strong></p>
+            <p>Toute touche devrait déclencher l'overlay d'alerte</p>
         </div>
 
         <div>
-            <h4>📝 Test de saisie normale (doit fonctionner) :</h4>
+            <h4>📝 Test saisie normale (doit fonctionner) :</h4>
             <input type="text" placeholder="Tapez ici - ceci doit fonctionner normalement">
             <textarea placeholder="Zone de texte - ceci doit aussi fonctionner"></textarea>
         </div>
+
+        <button onclick="testOverlay()">🧪 TESTER L'OVERLAY MANUELLEMENT</button>
 
         <div class="log-area" id="logArea">
             <strong>📊 JOURNAL DES ÉVÉNEMENTS :</strong><br>
         </div>
     </div>
 
+    <!-- OVERLAY D'ALERTE -->
+    <div id="violationOverlay" class="violation-overlay">
+        <div class="violation-content">
+            <div class="violation-title">🚨 VIOLATION DÉTECTÉE</div>
+            <div class="violation-message" id="violationMessage">
+                TENTATIVE NON AUTORISÉE
+            </div>
+            <div class="countdown">
+                Fermeture dans <span id="countdown">5</span>s
+            </div>
+        </div>
+    </div>
+
     <script>
-        let printScreenDetected = false;
-        
-        function addLog(message, type = 'info') {
+        function addLog(message) {
             const logArea = document.getElementById('logArea');
             const timestamp = new Date().toLocaleTimeString();
             const logEntry = document.createElement('div');
-            logEntry.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'blue';
             logEntry.innerHTML = `[${timestamp}] ${message}`;
             logArea.appendChild(logEntry);
             logArea.scrollTop = logArea.scrollHeight;
             console.log(`PIVAR: ${message}`);
         }
 
-        function updateStatus(message, type = 'info') {
-            const status = document.getElementById('status');
-            status.className = `alert alert-${type}`;
-            status.innerHTML = `<strong>Status :</strong> ${message}`;
+        function showOverlay(violationType) {
+            const overlay = document.getElementById('violationOverlay');
+            const messageElement = document.getElementById('violationMessage');
+            
+            messageElement.innerHTML = `
+                <strong>${violationType}</strong><br>
+                VOUS VOUS EXPOSEZ À DES SANCTIONS<br>
+                SESSION ENREGISTRÉE ET TRACÉE
+            `;
+            
+            overlay.style.display = 'flex';
+            
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            
+            const timer = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    overlay.style.display = 'none';
+                }
+            }, 1000);
+            
+            addLog(`🚨 OVERLAY AFFICHÉ: ${violationType}`);
         }
 
-        // DÉTECTION PRINT SCREEN MAXIMALE
+        function testOverlay() {
+            showOverlay('TEST MANUEL');
+        }
+
+        // DÉTECTION SIMPLE DE TOUTES LES TOUCHES
         document.addEventListener('keydown', function(e) {
-            // Log de TOUTES les touches pour diagnostic
-            addLog(`Touche: key="${e.key}" | code="${e.code}" | keyCode=${e.keyCode} | which=${e.which}`, 'info');
+            addLog(`Touche: ${e.key} | Ctrl: ${e.ctrlKey} | Alt: ${e.altKey} | Code: ${e.keyCode}`);
             
-            // DÉTECTION Win+Shift+S (Outil Capture Windows)
-            if (e.metaKey && e.shiftKey && e.key === 'S') {
+            // Si c'est dans un champ de saisie, autoriser
+            const isInInput = e.target.matches('input, textarea, select');
+            if (isInInput) {
+                addLog(`✅ Saisie autorisée dans champ`);
+                return;
+            }
+            
+            // TESTER TOUTES LES TOUCHES SUSPECTES
+            let violationType = null;
+            
+            // Ctrl + quelque chose
+            if (e.ctrlKey) {
+                violationType = `CTRL+${e.key.toUpperCase()} INTERDIT`;
+            }
+            
+            // Alt + quelque chose
+            else if (e.altKey) {
+                violationType = `ALT+${e.key.toUpperCase()} INTERDIT`;
+            }
+            
+            // Touches F
+            else if (e.key.startsWith('F') && e.key !== 'F5') {
+                violationType = `TOUCHE ${e.key} INTERDITE`;
+            }
+            
+            // Print Screen
+            else if (e.key === 'PrintScreen' || e.keyCode === 44 || e.code === 'PrintScreen') {
+                violationType = `CAPTURE D'ÉCRAN INTERDITE`;
+            }
+            
+            // Si violation détectée
+            if (violationType) {
                 e.preventDefault();
                 e.stopPropagation();
-                addLog(`🚨 WIN+SHIFT+S DÉTECTÉ ET BLOQUÉ ! (Outil Capture Windows)`, 'error');
-                updateStatus(`✅ Win+Shift+S bloqué !`, 'success');
+                showOverlay(violationType);
                 return false;
             }
             
-            // Tentatives de détection Print Screen avec TOUS les codes possibles
-            const isPrintScreen = 
-                e.key === 'PrintScreen' ||
-                e.code === 'PrintScreen' ||
-                e.keyCode === 44 ||
-                e.keyCode === 42 ||
-                e.keyCode === 124 ||
-                e.keyCode === 183 ||
-                e.which === 44 ||
-                e.which === 42 ||
-                e.which === 124 ||
-                e.which === 183 ||
-                e.key === 'Print' ||
-                e.code === 'Print' ||
-                e.code === 'PrintScrn' ||
-                e.key.includes('Print') ||
-                e.code.includes('Print') ||
-                (e.keyCode >= 42 && e.keyCode <= 47) ||
-                (e.which >= 42 && e.which <= 47);
-
-            if (isPrintScreen) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                printScreenDetected = true;
-                const detectionInfo = `key="${e.key}" | code="${e.code}" | keyCode=${e.keyCode} | which=${e.which}`;
-                
-                addLog(`🚨 PRINT SCREEN DÉTECTÉ ET BLOQUÉ !`, 'error');
-                addLog(`Détails complets: ${detectionInfo}`, 'success');
-                
-                updateStatus(`✅ Print Screen détecté et bloqué ! (${detectionInfo})`, 'success');
-                
-                // Tentative de nettoyage presse-papier
-                setTimeout(async () => {
-                    try {
-                        if (navigator.clipboard && navigator.clipboard.writeText) {
-                            await navigator.clipboard.writeText('🚨 CONTENU PROTÉGÉ PIVAR - Reproduction interdite');
-                            addLog('✅ Presse-papier remplacé par message de protection', 'success');
-                        }
-                    } catch (err) {
-                        addLog(`❌ Impossible de modifier le presse-papier: ${err.message}`, 'error');
-                    }
-                }, 100);
-                
-                return false;
-            }
-
-            // Test autres raccourcis
-            if (e.key === 'F12') {
-                addLog('F12 détecté (outils développeur)', 'info');
-            }
-            
-            if (e.ctrlKey && e.key === 'c') {
-                const isInInput = e.target.matches('input, textarea');
-                if (!isInInput) {
-                    e.preventDefault();
-                    addLog('Ctrl+C bloqué (hors champ de saisie)', 'success');
-                    return false;
-                } else {
-                    addLog('Ctrl+C autorisé (dans champ de saisie)', 'info');
-                }
-            }
-            // AUTRES RACCOURCIS BLOQUÉS (hors champs de saisie)
-            if (!isInInput) {
-                // Ctrl+A (Sélectionner tout)
-                if (e.ctrlKey && e.key === 'a') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addLog(`🚨 CTRL+A (Sélectionner tout) BLOQUÉ !`, 'error');
-                    updateStatus(`✅ Ctrl+A bloqué - Sélection impossible`, 'success');
-                    return false;
-                }
-                
-                // Ctrl+C (Copier)
-                if (e.ctrlKey && e.key === 'c') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addLog(`🚨 CTRL+C (Copier) BLOQUÉ !`, 'error');
-                    updateStatus(`✅ Ctrl+C bloqué - Copie impossible`, 'success');
-                    return false;
-                }
-                
-                // F12 (DevTools)
-                if (e.key === 'F12') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addLog(`🚨 F12 (Outils développeur) BLOQUÉ !`, 'error');
-                    updateStatus(`✅ F12 bloqué - DevTools inaccessible`, 'success');
-                    return false;
-                }
-                
-                // Ctrl+Shift+I (DevTools alternatif)
-                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addLog(`🚨 CTRL+SHIFT+I (DevTools) BLOQUÉ !`, 'error');
-                    updateStatus(`✅ Ctrl+Shift+I bloqué`, 'success');
-                    return false;
-                }
-                
-                // Ctrl+U (Voir source)
-                if (e.ctrlKey && e.key === 'u') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addLog(`🚨 CTRL+U (Voir source) BLOQUÉ !`, 'error');
-                    updateStatus(`✅ Ctrl+U bloqué - Source inaccessible`, 'success');
-                    return false;
-                }
-            }
         }, true);
 
         // Protection clic-droit
@@ -251,23 +234,35 @@
             const isInInput = e.target.matches('input, textarea');
             if (!isInInput) {
                 e.preventDefault();
-                addLog('Clic-droit bloqué', 'success');
+                showOverlay('CLIC-DROIT INTERDIT');
+                addLog('🚨 Clic-droit bloqué');
+                return false;
+            }
+        });
+
+        // Protection sélection
+        document.addEventListener('selectstart', function(e) {
+            const isInInput = e.target.matches('input, textarea');
+            if (!isInInput) {
+                e.preventDefault();
+                addLog('🚨 Sélection bloquée');
                 return false;
             }
         });
 
         // Initialisation
         window.addEventListener('load', function() {
-            addLog('🛡️ Système de protection PIVAR initialisé', 'success');
-            addLog('En attente de la touche Print Screen...', 'info');
+            addLog('🛡️ Système PIVAR initialisé - Version simplifiée');
+            addLog('Testez les touches pour voir les overlays');
+            
+            // Test automatique après 3 secondes
+            setTimeout(() => {
+                addLog('⏳ Test automatique de l\'overlay dans 2 secondes...');
+                setTimeout(() => {
+                    showOverlay('DÉMONSTRATION AUTOMATIQUE');
+                }, 2000);
+            }, 3000);
         });
-
-        // Test périodique
-        setInterval(() => {
-            if (!printScreenDetected) {
-                addLog('⏳ Toujours en attente du test Print Screen...', 'info');
-            }
-        }, 30000);
     </script>
 </body>
 </html>
