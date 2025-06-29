@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIVAR - Test Debug Protections</title>
+    <title>PIVAR - Surveillance Sécurisée avec Tracking</title>
     <style>
         * {
             margin: 0;
@@ -12,468 +12,478 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f0f0;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
         }
 
-        .debug-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .test-section {
-            background: #f8f9fa;
+        .header-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
             padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #007bff;
-            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            user-select: none;
         }
 
-        .test-button {
+        .header-banner h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .progress-bar {
             background: #28a745;
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
+            text-align: center;
+            padding: 8px;
             font-size: 14px;
+            font-weight: 500;
+            user-select: none;
         }
 
-        .test-button:hover {
-            background: #218838;
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 100px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        .result {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
+        .security-notice {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 0;
+            font-size: 13px;
             color: #155724;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-            display: none;
+            text-align: center;
+            user-select: none;
         }
 
-        .error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-            display: none;
+        .questionnaire-frame {
+            width: 100%;
+            height: calc(100vh - 300px);
+            border: none;
+            display: block;
         }
 
-        .log-area {
+        .footer {
             background: #f8f9fa;
-            border: 1px solid #dee2e6;
+            text-align: center;
             padding: 10px;
-            height: 200px;
-            overflow-y: scroll;
-            font-family: monospace;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            user-select: none;
+        }
+
+        /* Système de tracking */
+        .tracking-panel {
+            background: #f8f9fa;
+            border-top: 2px solid #007bff;
+            padding: 15px;
             font-size: 12px;
         }
 
-        .notification-area {
+        .user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+        }
+
+        .alert-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+            display: none;
+        }
+
+        .alert-critical {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        /* Notifications */
+        .security-notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 300px;
-            z-index: 10000;
-        }
-
-        .notification {
             background: #28a745;
             color: white;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            transform: translateX(320px);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateX(400px);
             transition: transform 0.3s ease;
         }
 
-        .notification.show {
+        .security-notification.show {
             transform: translateX(0);
         }
 
-        .test-text {
-            background: #e9ecef;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+        /* Watermark de session */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 2rem;
+            color: rgba(0, 0, 0, 0.05);
+            z-index: 1;
+            pointer-events: none;
+            font-weight: bold;
             user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        @media (max-width: 768px) {
+            .user-info {
+                grid-template-columns: 1fr;
+            }
+            .watermark {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="debug-container">
-        <h1>🛡️ PIVAR - Test Debug Protections</h1>
-        <p><strong>Objectif :</strong> Tester chaque protection individuellement</p>
+    <!-- Watermark de session -->
+    <div class="watermark" id="sessionWatermark">
+        SESSION PIVAR SURVEILLÉE
+    </div>
 
-        <div class="test-section">
-            <h3>📊 Status Système</h3>
-            <div id="systemStatus">Initialisation...</div>
+    <!-- En-tête professionnel PIVAR -->
+    <div class="header-banner">
+        <h1>🧠 PIVAR - Évaluation Cognitive Professionnelle</h1>
+        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme sécurisée d'évaluation comportementale</p>
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="progress-bar">
+        📊 QUESTIONNAIRE [X/7] : [NOM_QUESTIONNAIRE] • Session sécurisée • Durée estimée : [XX] minutes
+    </div>
+
+    <!-- Conteneur principal -->
+    <div class="main-container">
+        <!-- Notice de sécurité discrète -->
+        <div class="security-notice">
+            ✅ Session sécurisée active • Vos données sont protégées • Évaluation confidentielle
         </div>
 
-        <div class="test-section">
-            <h3>🧪 Tests Manuels</h3>
+        <!-- Questionnaire Tally intégré -->
+        <iframe 
+            class="questionnaire-frame" 
+            src="https://formulaires.pivar.info/r/[CODE_TALLY]"
+            title="Questionnaire PIVAR Sécurisé"
+            allowtransparency="true"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+
+        <!-- Panneau de tracking (visible par l'administrateur) -->
+        <div class="tracking-panel">
+            <h4>📊 Surveillance de Session</h4>
             
-            <h4>Test 1: Print Screen (toutes combinaisons)</h4>
-            <p>Testez : <code>Print Screen</code>, <code>Ctrl+Alt+Print Screen</code>, <code>Alt+Print Screen</code></p>
-            <div id="printScreenResult" class="result">❌ Pas encore testé</div>
-            
-            <h4>Test 2: Copie de texte</h4>
-            <div class="test-text">
-                📝 TEXTE À COPIER : Sélectionnez ce texte et appuyez Ctrl+C
+            <div class="user-info">
+                <div class="info-box">
+                    <strong>👤 Utilisateur</strong><br>
+                    <span id="userInfo">Identification en cours...</span>
+                </div>
+                <div class="info-box">
+                    <strong>🕒 Session</strong><br>
+                    <span id="sessionInfo">Démarrée à <span id="startTime"></span></span>
+                </div>
+                <div class="info-box">
+                    <strong>🛡️ Sécurité</strong><br>
+                    <span id="securityLevel">Niveau: NORMAL</span>
+                </div>
             </div>
-            <div id="copyResult" class="result">❌ Pas encore testé</div>
-            
-            <h4>Test 3: Clic-droit</h4>
-            <div class="test-text">
-                👆 ZONE CLIC-DROIT : Faites un clic-droit ici
+
+            <div id="alertContainer">
+                <!-- Les alertes apparaîtront ici -->
             </div>
-            <div id="rightClickResult" class="result">❌ Pas encore testé</div>
-            
-            <h4>Test 4: Outils développeur</h4>
-            <p>Appuyez sur <code>F12</code></p>
-            <div id="devToolsResult" class="result">❌ Pas encore testé</div>
-            
-            <h4>Test 5: Saisie normale (doit fonctionner)</h4>
-            <input type="text" placeholder="Tapez ici - ceci doit fonctionner normalement">
-            <textarea placeholder="Zone de texte - ceci doit aussi fonctionner"></textarea>
+
+            <div style="margin-top: 10px; font-size: 11px; color: #666;">
+                <strong>IP:</strong> <span id="userIP">Détection...</span> | 
+                <strong>Navigateur:</strong> <span id="userAgent"></span> |
+                <strong>Résolution:</strong> <span id="screenRes"></span>
+            </div>
         </div>
 
-        <div class="test-section">
-            <h3>🧰 Tests Automatiques</h3>
-            <button class="test-button" onclick="testPrintScreen()">Simuler Print Screen</button>
-            <button class="test-button" onclick="testCtrlAltPrintScreen()">Simuler Ctrl+Alt+PrtSc</button>
-            <button class="test-button" onclick="testCopyEvent()">Simuler Ctrl+C</button>
-            <button class="test-button" onclick="testRightClick()">Simuler Clic-droit</button>
-            <button class="test-button" onclick="testF12()">Simuler F12</button>
-            <button class="test-button" onclick="clearLog()">Effacer Log</button>
-        </div>
-
-        <div class="test-section">
-            <h3>📝 Journal des Événements</h3>
-            <div id="logArea" class="log-area"></div>
+        <!-- Pied de page -->
+        <div class="footer">
+            PIVAR © 2025 • Évaluation cognitive sécurisée • Session surveillée et tracée
         </div>
     </div>
 
-    <div class="notification-area" id="notificationArea"></div>
+    <!-- Notification de sécurité -->
+    <div id="securityNotification" class="security-notification">
+        Protection activée
+    </div>
 
     <script>
-        // Variables globales
-        let testResults = {
-            printScreen: false,
-            copy: false,
-            rightClick: false,
-            devTools: false
+        // ================================
+        // SYSTÈME DE TRACKING COMPLET
+        // ================================
+
+        let sessionData = {
+            sessionId: 'PIVAR_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            startTime: new Date(),
+            userAgent: navigator.userAgent,
+            screenResolution: screen.width + 'x' + screen.height,
+            suspiciousActivity: 0,
+            violations: [],
+            userInfo: null
         };
 
-        // Fonction de log
-        function addLog(message, type = 'info') {
-            const logArea = document.getElementById('logArea');
-            const timestamp = new Date().toLocaleTimeString();
-            const logEntry = document.createElement('div');
-            logEntry.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
-            logEntry.innerHTML = `[${timestamp}] ${message}`;
-            logArea.appendChild(logEntry);
-            logArea.scrollTop = logArea.scrollHeight;
-            console.log(`PIVAR Debug: ${message}`);
+        // Configuration des protections
+        const PIVAR_SECURITY = {
+            enableWarnings: true,
+            enableTracking: true,
+            adminEmail: 'admin@pivar.info',
+            webhookUrl: 'https://your-webhook-url.com/pivar-alerts' // À configurer
+        };
+
+        console.log('🛡️ PIVAR Security & Tracking System - Session:', sessionData.sessionId);
+
+        // ================================
+        // FONCTIONS DE TRACKING
+        // ================================
+
+        function initializeTracking() {
+            // Obtenir l'IP de l'utilisateur
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    sessionData.userIP = data.ip;
+                    document.getElementById('userIP').textContent = data.ip;
+                    logSecurityEvent('SESSION_STARTED', `IP: ${data.ip}`);
+                })
+                .catch(() => {
+                    document.getElementById('userIP').textContent = 'Non détectable';
+                });
+
+            // Informations de base
+            document.getElementById('startTime').textContent = sessionData.startTime.toLocaleTimeString();
+            document.getElementById('userAgent').textContent = navigator.userAgent.substring(0, 50) + '...';
+            document.getElementById('screenRes').textContent = sessionData.screenResolution;
+
+            // Tentative d'identification utilisateur (si connecté)
+            identifyUser();
+
+            // Mise à jour du watermark avec l'ID de session
+            document.getElementById('sessionWatermark').textContent = 
+                `SESSION ${sessionData.sessionId.substr(-8)} SURVEILLÉE`;
         }
 
-        // Fonction de notification
-        function showNotification(message, type = 'success') {
-            const notificationArea = document.getElementById('notificationArea');
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.style.background = type === 'error' ? '#dc3545' : '#28a745';
+        function identifyUser() {
+            // Essayer de récupérer l'email depuis l'iframe Tally (si possible)
+            // Ou depuis les paramètres URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email') || urlParams.get('user');
+            
+            if (userEmail) {
+                sessionData.userInfo = userEmail;
+                document.getElementById('userInfo').innerHTML = `📧 ${userEmail}`;
+                logSecurityEvent('USER_IDENTIFIED', userEmail);
+            } else {
+                // Générer un ID anonyme basé sur les caractéristiques du navigateur
+                const fingerprint = btoa(navigator.userAgent + screen.width + screen.height).substr(0, 12);
+                sessionData.userInfo = `Anonyme_${fingerprint}`;
+                document.getElementById('userInfo').innerHTML = `🔒 ${sessionData.userInfo}`;
+            }
+        }
+
+        function logSecurityEvent(eventType, details) {
+            const event = {
+                timestamp: new Date().toISOString(),
+                sessionId: sessionData.sessionId,
+                eventType: eventType,
+                details: details,
+                userInfo: sessionData.userInfo,
+                userIP: sessionData.userIP,
+                url: window.location.href
+            };
+
+            sessionData.violations.push(event);
+
+            // Log local
+            console.log('🚨 PIVAR Security Event:', event);
+
+            // Affichage dans l'interface admin
+            displayAlert(eventType, details);
+
+            // Envoi vers webhook (optionnel)
+            if (PIVAR_SECURITY.webhookUrl) {
+                sendToWebhook(event);
+            }
+
+            // Sauvegarde locale (si supporté)
+            try {
+                localStorage.setItem('pivar_violations_' + sessionData.sessionId, 
+                    JSON.stringify(sessionData.violations));
+            } catch (e) {
+                // Pas de localStorage disponible
+            }
+        }
+
+        function displayAlert(eventType, details) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertBox = document.createElement('div');
+            
+            let alertClass = 'alert-info';
+            let icon = '📋';
+            
+            if (eventType.includes('PRINT_SCREEN') || eventType.includes('WIN_SHIFT_S')) {
+                alertClass = 'alert-critical';
+                icon = '🚨';
+                sessionData.suspiciousActivity += 3;
+            } else if (eventType.includes('COPY') || eventType.includes('RIGHT_CLICK')) {
+                alertClass = 'alert-warning';
+                icon = '⚠️';
+                sessionData.suspiciousActivity += 1;
+            } else if (eventType.includes('DEVTOOLS')) {
+                alertClass = 'alert-warning';
+                icon = '🔧';
+                sessionData.suspiciousActivity += 2;
+            }
+
+            alertBox.className = `alert-box ${alertClass}`;
+            alertBox.style.display = 'block';
+            alertBox.innerHTML = `
+                <strong>${icon} ${new Date().toLocaleTimeString()}</strong> - ${eventType}<br>
+                <small>${details}</small>
+            `;
+
+            alertContainer.insertBefore(alertBox, alertContainer.firstChild);
+
+            // Limiter à 10 alertes visibles
+            const alerts = alertContainer.querySelectorAll('.alert-box');
+            if (alerts.length > 10) {
+                alertContainer.removeChild(alerts[alerts.length - 1]);
+            }
+
+            // Mise à jour du niveau de sécurité
+            updateSecurityLevel();
+        }
+
+        function updateSecurityLevel() {
+            const securityElement = document.getElementById('securityLevel');
+            let level = 'NORMAL';
+            let color = '#28a745';
+
+            if (sessionData.suspiciousActivity >= 8) {
+                level = '🚨 CRITIQUE';
+                color = '#dc3545';
+                // Alerte email critique
+                sendCriticalAlert();
+            } else if (sessionData.suspiciousActivity >= 5) {
+                level = '⚠️ ÉLEVÉ';
+                color = '#fd7e14';
+            } else if (sessionData.suspiciousActivity >= 2) {
+                level = '👁️ SURVEILLÉ';
+                color = '#ffc107';
+            }
+
+            securityElement.innerHTML = `Niveau: ${level}<br><small>Score: ${sessionData.suspiciousActivity}</small>`;
+            securityElement.style.color = color;
+        }
+
+        async function sendToWebhook(event) {
+            try {
+                await fetch(PIVAR_SECURITY.webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: `🚨 PIVAR Security Alert`,
+                        attachments: [{
+                            color: event.eventType.includes('CRITICAL') ? 'danger' : 'warning',
+                            fields: [
+                                { title: 'Session', value: event.sessionId, short: true },
+                                { title: 'Utilisateur', value: event.userInfo || 'Anonyme', short: true },
+                                { title: 'Événement', value: event.eventType, short: true },
+                                { title: 'Détails', value: event.details, short: true },
+                                { title: 'IP', value: event.userIP || 'Inconnue', short: true },
+                                { title: 'Heure', value: event.timestamp, short: true }
+                            ]
+                        }]
+                    })
+                });
+            } catch (error) {
+                console.log('Webhook non disponible:', error);
+            }
+        }
+
+        function sendCriticalAlert() {
+            // Envoi d'email critique (nécessite un service backend)
+            const alertData = {
+                type: 'CRITICAL_SECURITY_ALERT',
+                sessionId: sessionData.sessionId,
+                userInfo: sessionData.userInfo,
+                suspiciousActivity: sessionData.suspiciousActivity,
+                violations: sessionData.violations,
+                timestamp: new Date().toISOString()
+            };
+
+            logSecurityEvent('CRITICAL_ALERT_SENT', 'Alerte critique envoyée');
+        }
+
+        // ================================
+        // PROTECTIONS AVEC TRACKING
+        // ================================
+
+        function showSecurityNotice(message) {
+            const notification = document.getElementById('securityNotification');
             notification.textContent = message;
+            notification.classList.add('show');
             
-            notificationArea.appendChild(notification);
-            
-            // Animation d'entrée
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-            
-            // Suppression automatique
             setTimeout(() => {
                 notification.classList.remove('show');
-                setTimeout(() => {
-                    notificationArea.removeChild(notification);
-                }, 300);
             }, 3000);
-            
-            addLog(`Notification affichée: ${message}`, 'success');
         }
 
-        // Mise à jour du statut
-        function updateStatus() {
-            const status = document.getElementById('systemStatus');
-            const passed = Object.values(testResults).filter(r => r).length;
-            const total = Object.keys(testResults).length;
-            
-            status.innerHTML = `
-                <strong>Tests réussis:</strong> ${passed}/${total}<br>
-                <strong>Print Screen:</strong> ${testResults.printScreen ? '✅' : '❌'}<br>
-                <strong>Copie:</strong> ${testResults.copy ? '✅' : '❌'}<br>
-                <strong>Clic-droit:</strong> ${testResults.rightClick ? '✅' : '❌'}<br>
-                <strong>DevTools:</strong> ${testResults.devTools ? '✅' : '❌'}
-            `;
-        }
-
-        // Tests automatiques
-        function testPrintScreen() {
-            addLog('Test automatique Print Screen lancé');
-            const event = new KeyboardEvent('keydown', { key: 'PrintScreen', code: 'PrintScreen' });
-            document.dispatchEvent(event);
-        }
-
-        function testCtrlAltPrintScreen() {
-            addLog('Test automatique Ctrl+Alt+Print Screen lancé');
-            const event = new KeyboardEvent('keydown', { 
-                key: 'PrintScreen', 
-                code: 'PrintScreen',
-                ctrlKey: true,
-                altKey: true
-            });
-            document.dispatchEvent(event);
-        }
-
-        function testCopyEvent() {
-            addLog('Test automatique Ctrl+C lancé');
-            const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true });
-            document.dispatchEvent(event);
-        }
-
-        function testRightClick() {
-            addLog('Test automatique clic-droit lancé');
-            const event = new MouseEvent('contextmenu', { bubbles: true });
-            document.querySelector('.test-text').dispatchEvent(event);
-        }
-
-        function testF12() {
-            addLog('Test automatique F12 lancé');
-            const event = new KeyboardEvent('keydown', { key: 'F12' });
-            document.dispatchEvent(event);
-        }
-
-        function clearLog() {
-            const logArea = document.getElementById('logArea');
-            logArea.innerHTML = '';
-            addLog('Journal effacé - Protections toujours actives');
-        }
-
-        // DÉTECTION MOBILE ET RESTRICTIONS SPÉCIFIQUES
-        function detectMobileDevice() {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const isTablet = /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent);
-            
-            if (isMobile || isTablet) {
-                addLog('⚠️ APPAREIL MOBILE DÉTECTÉ - Restrictions renforcées activées', 'error');
-                
-                // Interface d'avertissement mobile
-                showNotification('📱 MOBILE DÉTECTÉ - Surveillance renforcée active');
-                
-                // Bloquer l'orientation pour éviter les captures "accidentelles"
-                screen.orientation?.lock?.('portrait').catch(() => {});
-                
-                // Surveillance spéciale mobile
-                startMobileSurveillance();
-                
-                return true;
-            }
-            return false;
-        }
-
-        function startMobileSurveillance() {
-            // Surveillance changements d'orientation (souvent = screenshot)
-            window.addEventListener('orientationchange', function() {
-                addLog('🚨 CHANGEMENT ORIENTATION - Possible tentative capture mobile', 'error');
-                setTimeout(async () => {
-                    try {
-                        await navigator.clipboard.writeText('📱 CAPTURE MOBILE DÉTECTÉE - Session PIVAR surveillée - Toute reproduction est interdite');
-                    } catch (err) {}
-                }, 500);
-            });
-
-            // Surveillance perte de focus (commun lors de screenshots mobiles)
-            let focusLossCount = 0;
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden) {
-                    focusLossCount++;
-                    if (focusLossCount > 2) {
-                        addLog(`🚨 MOBILE: ${focusLossCount}e perte de focus - Activité très suspecte`, 'error');
-                        suspiciousActivity += 2;
-                    }
-                }
-            });
-
-            // Détection vibration (certains mobiles vibrent lors de screenshots)
-            if ('vibrate' in navigator) {
-                // Surveillance des patterns de vibration suspects
-                addLog('Surveillance vibration mobile activée', 'info');
-            }
-        }
-        let clipboardMonitor;
-        
-        function startClipboardMonitoring() {
-            clipboardMonitor = setInterval(async () => {
-                try {
-                    if (navigator.clipboard && navigator.clipboard.readText) {
-                        const clipContent = await navigator.clipboard.readText();
-                        if (clipContent && clipContent.length > 10 && !clipContent.includes('PIVAR')) {
-                            // Contenu suspect détecté, remplacer
-                            await navigator.clipboard.writeText('🚨 CONTENU PROTÉGÉ DÉTECTÉ - Session PIVAR surveillée - Contact: securite@pivar.info');
-                            addLog('⚠️ Contenu suspect dans presse-papier remplacé', 'error');
-                        }
-                    }
-                } catch (err) {
-                    // Permission refusée ou pas supporté
-                }
-            }, 2000); // Vérification toutes les 2 secondes
-        }
-
-        // PROTECTION ANTI-SCREENSHOT MOBILE AVANCÉE
-        function addMobileProtections() {
-            // CSS spécial mobile pour rendre les captures difficiles
-            const mobileStyle = document.createElement('style');
-            mobileStyle.innerHTML = `
-                @media screen and (max-width: 768px) {
-                    body::before {
-                        content: "SESSION PIVAR SÉCURISÉE";
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%) rotate(-45deg);
-                        font-size: 4rem;
-                        color: rgba(255, 0, 0, 0.1);
-                        z-index: 9999;
-                        pointer-events: none;
-                        font-weight: bold;
-                    }
-                    
-                    body {
-                        -webkit-touch-callout: none;
-                        -webkit-user-select: none;
-                        -webkit-tap-highlight-color: transparent;
-                    }
-                }
-            `;
-            document.head.appendChild(mobileStyle);
-
-            // Surveillance tactile suspecte
-            let touchCount = 0;
-            document.addEventListener('touchstart', function(e) {
-                touchCount++;
-                if (e.touches.length >= 3) {
-                    addLog('🚨 MOBILE: Geste multi-touch suspect détecté', 'error');
-                    suspiciousActivity++;
-                }
-            });
-
-            // Détection tentatives de zoom (souvent avant screenshot)
-            let lastScale = 1;
-            document.addEventListener('touchmove', function(e) {
-                if (e.touches.length === 2) {
-                    const touch1 = e.touches[0];
-                    const touch2 = e.touches[1];
-                    const distance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2)
-                    );
-                    
-                    if (Math.abs(distance - lastScale) > 50) {
-                        addLog('🚨 MOBILE: Tentative de zoom détectée - Possible préparation capture', 'error');
-                        suspiciousActivity++;
-                    }
-                    lastScale = distance;
-                }
-            });
-        }
-        setTimeout(() => {
-            if (navigator.clipboard) {
-                startClipboardMonitoring();
-                addLog('Surveillance presse-papier activée', 'success');
-            }
-        }, 3000);
-        let suspiciousActivity = 0;
-        
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                suspiciousActivity++;
-                addLog(`⚠️ ALERTE: Utilisateur a quitté l'onglet (${suspiciousActivity}e fois) - Activité suspecte`, 'error');
-                
-                // Tentative de nettoyage préventif du presse-papier
-                setTimeout(async () => {
-                    try {
-                        await navigator.clipboard.writeText('🚨 SESSION PIVAR SURVEILLÉE - Toute reproduction est tracée et interdite');
-                        addLog('Presse-papier remplacé préventivement', 'success');
-                    } catch (err) {
-                        addLog('Surveillance active - Restriction presse-papier', 'info');
-                    }
-                }, 50);
-            } else {
-                addLog('Retour sur l\'onglet - Surveillance continue', 'info');
-            }
-        });
-
-        window.addEventListener('blur', function() {
-            addLog('⚠️ Fenêtre perdue (Alt+Tab ou clic ailleurs) - Activité surveillée', 'error');
-            suspiciousActivity++;
-        });
-
-        window.addEventListener('focus', function() {
-            addLog('Retour focus fenêtre - Contrôle repris', 'info');
-        });
-
-        // PROTECTION MAXIMALE - Tentative de vidage presse-papier
-        async function clearClipboard() {
-            try {
-                // Tentative de vider le presse-papier (Chrome/Edge moderne)
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText('');
-                    addLog('Presse-papier vidé après détection Print Screen', 'success');
-                }
-            } catch (err) {
-                addLog('Impossible de vider le presse-papier (restrictions navigateur)', 'info');
-            }
-        }
-
-        // PROTECTION RENFORCÉE Print Screen
+        // Protection clavier avec tracking
         document.addEventListener('keydown', function(e) {
-            addLog(`Touche détectée: ${e.key} ${e.ctrlKey ? '+ Ctrl' : ''} ${e.shiftKey ? '+ Shift' : ''} ${e.altKey ? '+ Alt' : ''} ${e.metaKey ? '+ Win' : ''}`, 'info');
-            
-            // Print Screen (toutes combinaisons) - DÉTECTION MAXIMALE
+            // Win+Shift+S (Outil Capture Windows)
+            if (e.metaKey && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                e.stopPropagation();
+                logSecurityEvent('WIN_SHIFT_S_BLOCKED', 'Tentative utilisation outil capture Windows');
+                showSecurityNotice('🚫 Outil Capture Windows détecté et bloqué');
+                return false;
+            }
+
+            // Print Screen (toutes combinaisons)
             if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
                 e.preventDefault();
                 e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                // Tentative de vidage immédiat du presse-papier
-                clearClipboard();
-                
-                testResults.printScreen = true;
-                document.getElementById('printScreenResult').style.display = 'block';
-                document.getElementById('printScreenResult').textContent = '✅ Print Screen BLOQUÉ + Presse-papier vidé';
                 
                 let combo = 'Print Screen';
                 if (e.ctrlKey && e.altKey) combo = 'Ctrl+Alt+Print Screen';
@@ -481,91 +491,45 @@
                 else if (e.ctrlKey) combo = 'Ctrl+Print Screen';
                 else if (e.metaKey) combo = 'Win+Print Screen';
                 
-                showNotification(`🚫 ${combo} bloqué + Presse-papier effacé`);
-                addLog(`${combo} bloqué avec tentative de vidage presse-papier`, 'success');
-                updateStatus();
-                
-                // Remplacement du contenu presse-papier par un message d'avertissement
-                setTimeout(async () => {
-                    try {
-                        await navigator.clipboard.writeText('⚠️ CONTENU PROTÉGÉ PIVAR - Reproduction interdite - Session surveillée');
-                        addLog('Presse-papier remplacé par message d\'avertissement', 'success');
-                    } catch (err) {
-                        addLog('Impossible de modifier le presse-papier', 'info');
-                    }
-                }, 100);
-                
+                logSecurityEvent('PRINT_SCREEN_BLOCKED', combo);
+                showSecurityNotice(`🚫 ${combo} bloqué`);
                 return false;
             }
-            
-            // BLOCAGE PRÉVENTIF des combinaisons dangereuses
-            if ((e.ctrlKey && e.altKey) || (e.altKey && e.key !== 'Tab')) {
-                if (e.key !== 'Tab' && e.key !== 'F4') {  // Autoriser Alt+Tab et Alt+F4
-                    addLog(`Combinaison suspecte détectée: ${e.key} avec modificateurs`, 'success');
+
+            // Autres raccourcis
+            const isInInteractiveElement = e.target.matches('input, textarea, select, button, [contenteditable="true"]') ||
+                                         e.target.closest('iframe');
+
+            if (!isInInteractiveElement) {
+                if ((e.ctrlKey && e.key === 'c') || (e.ctrlKey && e.key === 'a') || 
+                    (e.key === 'F12') || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
                     e.preventDefault();
-                    e.stopPropagation();
-                    showNotification('🚫 Combinaison de touches bloquée');
+                    logSecurityEvent('SHORTCUT_BLOCKED', `${e.key} avec modificateurs`);
+                    showSecurityNotice('⚠️ Raccourci bloqué');
                     return false;
                 }
-            }
-            
-            // Ctrl+C (si pas dans un champ)
-            if (e.ctrlKey && e.key === 'c') {
-                const isInInput = e.target.matches('input, textarea, [contenteditable="true"]');
-                if (!isInInput) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    testResults.copy = true;
-                    document.getElementById('copyResult').style.display = 'block';
-                    document.getElementById('copyResult').textContent = '✅ Copie BLOQUÉE !';
-                    showNotification('📋 Copie de texte bloquée !');
-                    addLog('Ctrl+C bloqué avec succès (hors champ de saisie)', 'success');
-                    updateStatus();
-                    return false;
-                } else {
-                    addLog('Ctrl+C autorisé dans champ de saisie', 'info');
-                }
-            }
-            
-            // F12
-            if (e.key === 'F12') {
-                e.preventDefault();
-                e.stopPropagation();
-                testResults.devTools = true;
-                document.getElementById('devToolsResult').style.display = 'block';
-                document.getElementById('devToolsResult').textContent = '✅ F12 BLOQUÉ !';
-                showNotification('🔧 Outils développeur bloqués !');
-                addLog('F12 bloqué avec succès', 'success');
-                updateStatus();
-                return false;
             }
         }, true);
 
-        // Protection clic-droit
+        // Protection clic-droit avec tracking
         document.addEventListener('contextmenu', function(e) {
-            addLog(`Clic-droit détecté sur: ${e.target.tagName} ${e.target.className}`, 'info');
+            const isInInteractiveElement = e.target.matches('input, textarea, select') ||
+                                         e.target.closest('iframe');
             
-            const isInInput = e.target.matches('input, textarea, select');
-            if (!isInInput) {
+            if (!isInInteractiveElement) {
                 e.preventDefault();
-                testResults.rightClick = true;
-                document.getElementById('rightClickResult').style.display = 'block';
-                document.getElementById('rightClickResult').textContent = '✅ Clic-droit BLOQUÉ !';
-                showNotification('👆 Menu contextuel bloqué !');
-                addLog('Clic-droit bloqué avec succès', 'success');
-                updateStatus();
+                logSecurityEvent('RIGHT_CLICK_BLOCKED', 'Menu contextuel bloqué');
+                showSecurityNotice('📋 Menu contextuel désactivé');
                 return false;
-            } else {
-                addLog('Clic-droit autorisé dans champ de saisie', 'info');
             }
         });
 
-        // Protection sélection
-        document.addEventListener('selectstart', function(e) {
-            if (e.target.closest('.test-text')) {
-                e.preventDefault();
-                addLog('Sélection de texte bloquée', 'success');
-                return false;
+        // Surveillance changement d'onglet
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                logSecurityEvent('TAB_SWITCHED', 'Utilisateur a quitté l\'onglet');
+            } else {
+                logSecurityEvent('TAB_RETURNED', 'Retour sur l\'onglet');
             }
         });
 
@@ -577,33 +541,47 @@
             
             if ((heightDiff > 200 || widthDiff > 200) && !devToolsDetected) {
                 devToolsDetected = true;
-                showNotification('🔍 DevTools détectés par surveillance !');
-                addLog('DevTools détectés par surveillance des dimensions', 'success');
+                logSecurityEvent('DEVTOOLS_OPENED', `Dimensions: ${widthDiff}x${heightDiff}`);
+                showSecurityNotice('🔍 Outils développeur détectés');
             } else if (heightDiff <= 200 && widthDiff <= 200 && devToolsDetected) {
                 devToolsDetected = false;
-                addLog('DevTools fermés (surveillance)', 'info');
+                logSecurityEvent('DEVTOOLS_CLOSED', 'Outils développeur fermés');
             }
         }, 1000);
 
-        // INITIALISATION COMPLÈTE DES PROTECTIONS
+        // Initialisation
         window.addEventListener('load', function() {
-            addLog('Page chargée - Protections actives', 'success');
+            initializeTracking();
+            logSecurityEvent('SESSION_INITIALIZED', 'Système de sécurité activé');
             
-            // Détection et protection mobile
-            const isMobile = detectMobileDevice();
-            if (isMobile) {
-                addMobileProtections();
-                addLog('Protections mobiles spécifiques activées', 'success');
-            }
-            
-            updateStatus();
+            setTimeout(() => {
+                showSecurityNotice('🛡️ Session surveillée - Protections actives');
+            }, 2000);
         });
 
-        // Test de bienvenue
-        setTimeout(function() {
-            showNotification('🛡️ Système de protection initialisé');
-            addLog('Message de bienvenue affiché', 'info');
-        }, 2000);
+        // Nettoyage à la fermeture
+        window.addEventListener('beforeunload', function() {
+            logSecurityEvent('SESSION_ENDED', 'Fermeture de session');
+        });
+
+        // Export des données pour l'admin (fonction utilitaire)
+        window.exportSecurityReport = function() {
+            const report = {
+                sessionId: sessionData.sessionId,
+                userInfo: sessionData.userInfo,
+                duration: new Date() - sessionData.startTime,
+                totalViolations: sessionData.violations.length,
+                suspiciousScore: sessionData.suspiciousActivity,
+                violations: sessionData.violations
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pivar_security_report_${sessionData.sessionId}.json`;
+            a.click();
+        };
     </script>
 </body>
 </html>
