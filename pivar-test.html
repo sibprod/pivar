@@ -67,16 +67,21 @@
         </div>
 
         <div class="test-zone">
-            <h3>🎯 ZONE DE TEST PRINT SCREEN</h3>
-            <p>Appuyez sur la touche <strong>Print Screen</strong> de votre clavier</p>
-            <p style="color: #666;">La détection s'affichera ci-dessous</p>
+            <h3>🎯 ZONE DE TEST PROTECTION COMPLÈTE</h3>
+            <p><strong>✅ PROTECTION CONFIRMÉE :</strong> Sélection de texte bloquée !</p>
             
-            <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border-radius: 4px;">
-                <strong>📋 Autres tests :</strong><br>
-                • <strong>Ctrl+Alt+Print Screen</strong> → Test capture zone<br>
-                • <strong>Win+Shift+S</strong> → Test outil capture Windows<br>
-                • <strong>Ctrl+C</strong> sur ce texte → Test copie<br>
-                • <strong>Clic-droit</strong> sur ce texte → Test menu contextuel
+            <div style="margin: 20px 0; padding: 15px; background: #d4edda; border-radius: 4px; border: 1px solid #c3e6cb;">
+                <strong>🧪 TESTS À EFFECTUER :</strong><br><br>
+                
+                <strong style="color: #28a745;">✅ SÉLECTION TEXTE :</strong> Essayez de sélectionner ce texte → DOIT ÊTRE BLOQUÉ<br><br>
+                
+                <strong>🔧 AUTRES TESTS :</strong><br>
+                • <strong>Clic-droit</strong> sur ce texte → Doit être bloqué<br>
+                • <strong>Ctrl+A</strong> → Sélectionner tout → Doit être bloqué<br>
+                • <strong>Ctrl+C</strong> → Copie → Doit être bloqué<br>
+                • <strong>F12</strong> → Outils développeur → Doit être bloqué<br>
+                • <strong>Ctrl+Alt+Print Screen</strong> → Doit être bloqué<br>
+                • <strong>Print Screen simple</strong> → Détection à vérifier
             </div>
         </div>
 
@@ -186,6 +191,53 @@
                     return false;
                 } else {
                     addLog('Ctrl+C autorisé (dans champ de saisie)', 'info');
+                }
+            }
+            // AUTRES RACCOURCIS BLOQUÉS (hors champs de saisie)
+            if (!isInInput) {
+                // Ctrl+A (Sélectionner tout)
+                if (e.ctrlKey && e.key === 'a') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addLog(`🚨 CTRL+A (Sélectionner tout) BLOQUÉ !`, 'error');
+                    updateStatus(`✅ Ctrl+A bloqué - Sélection impossible`, 'success');
+                    return false;
+                }
+                
+                // Ctrl+C (Copier)
+                if (e.ctrlKey && e.key === 'c') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addLog(`🚨 CTRL+C (Copier) BLOQUÉ !`, 'error');
+                    updateStatus(`✅ Ctrl+C bloqué - Copie impossible`, 'success');
+                    return false;
+                }
+                
+                // F12 (DevTools)
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addLog(`🚨 F12 (Outils développeur) BLOQUÉ !`, 'error');
+                    updateStatus(`✅ F12 bloqué - DevTools inaccessible`, 'success');
+                    return false;
+                }
+                
+                // Ctrl+Shift+I (DevTools alternatif)
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addLog(`🚨 CTRL+SHIFT+I (DevTools) BLOQUÉ !`, 'error');
+                    updateStatus(`✅ Ctrl+Shift+I bloqué`, 'success');
+                    return false;
+                }
+                
+                // Ctrl+U (Voir source)
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addLog(`🚨 CTRL+U (Voir source) BLOQUÉ !`, 'error');
+                    updateStatus(`✅ Ctrl+U bloqué - Source inaccessible`, 'success');
+                    return false;
                 }
             }
         }, true);
