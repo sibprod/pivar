@@ -9,43 +9,25 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* BLOCAGE ABSOLU DE LA SÉLECTION */
-            -webkit-user-select: none !important;
-            -moz-user-select: none !important;
-            -ms-user-select: none !important;
-            user-select: none !important;
-            -webkit-touch-callout: none !important;
-            -webkit-tap-highlight-color: transparent !important;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            overflow-x: hidden;
-            /* PROTECTIONS CSS MAXIMALES */
-            -webkit-user-select: none !important;
-            -moz-user-select: none !important;
-            -ms-user-select: none !important;
-            user-select: none !important;
-            -webkit-touch-callout: none !important;
-            -khtml-user-select: none !important;
-            -webkit-user-drag: none !important;
-            -khtml-user-drag: none !important;
-            -moz-user-drag: none !important;
-            -o-user-drag: none !important;
-            user-drag: none !important;
+            /* Protection sélection sur l'interface uniquement */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
-        /* BLOCAGE ABSOLU DE TOUTE SÉLECTION */
-        *::selection {
-            background: transparent !important;
-        }
-        *::-moz-selection {
-            background: transparent !important;
-        }
-        *::-webkit-selection {
-            background: transparent !important;
+        /* Permettre la sélection dans l'iframe */
+        iframe {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
         }
 
         .header-banner {
@@ -54,7 +36,6 @@
             text-align: center;
             padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
         }
 
         .header-banner h1 {
@@ -77,7 +58,6 @@
             background: white;
             min-height: calc(100vh - 100px);
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            position: relative;
         }
 
         .security-notice {
@@ -95,20 +75,6 @@
             height: calc(100vh - 160px);
             border: none;
             display: block;
-            /* EMPÊCHER TOUTE INTERACTION DIRECTE AVEC L'IFRAME */
-            pointer-events: none;
-        }
-
-        /* COUCHE DE PROTECTION INVISIBLE AU-DESSUS DE L'IFRAME */
-        .iframe-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 160px);
-            z-index: 10;
-            background: transparent;
-            pointer-events: auto;
         }
 
         .footer {
@@ -120,83 +86,63 @@
             border-top: 1px solid #dee2e6;
         }
 
-        /* OVERLAY D'ALERTE RENFORCÉ */
-        .security-overlay {
+        /* NOTIFICATION DISCRÈTE (pas d'overlay qui bloque) */
+        .security-notification {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(220, 53, 69, 0.98) !important;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
             color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.4);
+            z-index: 10000;
             display: none;
-            z-index: 999999;
-            justify-content: center;
+            max-width: 350px;
+            border-left: 5px solid #fff;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        .notification-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
             align-items: center;
-            text-align: center;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
         }
 
-        .security-content {
-            background: #dc3545;
-            padding: 40px;
-            border-radius: 15px;
-            border: 3px solid #fff;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            max-width: 600px;
-            animation: shake 0.8s infinite;
+        .notification-message {
+            font-size: 12px;
+            line-height: 1.3;
+            margin-bottom: 8px;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0) scale(1); }
-            25% { transform: translateX(-10px) scale(1.02); }
-            75% { transform: translateX(10px) scale(1.02); }
+        .notification-countdown {
+            font-size: 11px;
+            opacity: 0.8;
+            text-align: right;
         }
 
-        .security-title {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #ffeb3b;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .security-message {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .countdown {
-            font-size: 2rem;
-            color: #ffeb3b;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        /* Watermarks multiples */
-        .watermark1 {
+        /* Watermark discret */
+        .watermark {
             position: fixed;
-            top: 25%;
-            left: 25%;
-            transform: rotate(-45deg);
-            font-size: 1.2rem;
-            color: rgba(220, 53, 69, 0.05);
-            z-index: 1;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: rgba(108, 117, 125, 0.3);
             pointer-events: none;
-            font-weight: bold;
-        }
-
-        .watermark2 {
-            position: fixed;
-            top: 75%;
-            right: 25%;
-            transform: rotate(45deg);
-            font-size: 1.2rem;
-            color: rgba(220, 53, 69, 0.05);
             z-index: 1;
-            pointer-events: none;
-            font-weight: bold;
         }
 
         /* Styles mobiles */
@@ -211,40 +157,54 @@
             .questionnaire-frame {
                 height: calc(100vh - 140px);
             }
-            .iframe-overlay {
-                height: calc(100vh - 140px);
-            }
-            .security-content {
-                padding: 30px 20px;
-                margin: 20px;
-            }
-            .security-title {
-                font-size: 2.2rem;
+            .security-notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
             }
         }
 
-        /* PROTECTION CONTRE F12 ET DEVTOOLS */
-        .devtools-detected {
+        /* Indicateur de session sécurisée */
+        .security-indicator {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000 !important;
-            color: #ff0000;
-            z-index: 999999;
-            display: none;
-            justify-content: center;
+            top: 10px;
+            left: 10px;
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            z-index: 1000;
+            display: flex;
             align-items: center;
-            font-size: 3rem;
-            text-align: center;
+            gap: 5px;
+        }
+
+        .security-dot {
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
         }
     </style>
 </head>
 <body>
-    <!-- Watermarks multiples -->
-    <div class="watermark1">SESSION PIVAR PROTÉGÉE</div>
-    <div class="watermark2">REPRODUCTION INTERDITE</div>
+    <!-- Indicateur de session sécurisée -->
+    <div class="security-indicator">
+        <div class="security-dot"></div>
+        Session sécurisée
+    </div>
+
+    <!-- Watermark discret -->
+    <div class="watermark">
+        PIVAR - Évaluation Protégée © 2025
+    </div>
 
     <!-- En-tête professionnel PIVAR -->
     <div class="header-banner">
@@ -264,21 +224,15 @@
             ✅ Session sécurisée active • Vos données sont protégées • Évaluation confidentielle
         </div>
 
-        <!-- Conteneur de l'iframe avec overlay de protection -->
-        <div style="position: relative;">
-            <!-- Questionnaire Tally intégré -->
-            <iframe 
-                class="questionnaire-frame" 
-                src="https://formulaires.pivar.info/r/mJog7Y"
-                title="Questionnaire PIVAR Sécurisé"
-                allowtransparency="true"
-                sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-            
-            <!-- Couche de protection invisible -->
-            <div class="iframe-overlay" id="iframeOverlay"></div>
-        </div>
+        <!-- Questionnaire Tally intégré -->
+        <iframe 
+            class="questionnaire-frame" 
+            src="https://formulaires.pivar.info/r/mJog7Y"
+            title="Questionnaire PIVAR Sécurisé"
+            allowtransparency="true"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
 
         <!-- Pied de page -->
         <div class="footer">
@@ -286,324 +240,205 @@
         </div>
     </div>
 
-    <!-- OVERLAY D'ALERTE DE SÉCURITÉ -->
-    <div id="securityOverlay" class="security-overlay">
-        <div class="security-content">
-            <div class="security-title">🚨 VIOLATION DÉTECTÉE</div>
-            <div class="security-message" id="securityMessage">
-                ACTION NON AUTORISÉE
-            </div>
-            <div class="countdown">
-                ⏱️ Questionnaire dans <span id="countdown">5</span>s
-            </div>
+    <!-- NOTIFICATION DISCRÈTE (ne bloque pas l'écran) -->
+    <div id="securityNotification" class="security-notification">
+        <div class="notification-title">
+            🛡️ <span id="notificationTitle">Sécurité PIVAR</span>
+        </div>
+        <div class="notification-message" id="notificationMessage">
+            Action détectée
+        </div>
+        <div class="notification-countdown">
+            <span id="notificationCountdown"></span>
         </div>
     </div>
 
-    <!-- DevTools Detection -->
-    <div id="devtoolsAlert" class="devtools-detected">
-        🚨 OUTILS DÉVELOPPEUR DÉTECTÉS<br>
-        FERMER IMMÉDIATEMENT<br>
-        SESSION SURVEILLÉE
-    </div>
-
     <script>
-        // Configuration ultra-sécurisée
-        const ULTRA_SECURITY = {
-            sessionId: 'PIVAR_ULTRA_' + Date.now(),
+        // Configuration intelligente
+        const SMART_SECURITY = {
+            sessionId: 'PIVAR_SMART_' + Date.now(),
             violations: 0,
-            maxViolations: 3, // Plus strict
-            alertActive: false,
-            lastViolation: 0
+            lastAlert: 0,
+            alertCooldown: 2000, // 2 secondes entre alertes
+            enabled: true
         };
 
-        console.log('🛡️ PIVAR ULTRA SECURITY - Session:', ULTRA_SECURITY.sessionId);
+        console.log('🛡️ PIVAR Smart Security - Session:', SMART_SECURITY.sessionId);
 
-        // Fonction d'alerte PERSISTANTE
-        function showUltraAlert(violationType, details = '') {
-            // Éviter le spam d'alertes
+        // Notification discrète (ne bloque pas l'utilisateur)
+        function showSmartNotification(title, message, duration = 4000) {
             const now = Date.now();
-            if (ULTRA_SECURITY.alertActive || (now - ULTRA_SECURITY.lastViolation) < 1000) {
+            
+            // Éviter le spam de notifications
+            if (now - SMART_SECURITY.lastAlert < SMART_SECURITY.alertCooldown) {
                 return;
             }
-
-            ULTRA_SECURITY.alertActive = true;
-            ULTRA_SECURITY.lastViolation = now;
-            ULTRA_SECURITY.violations++;
             
-            const overlay = document.getElementById('securityOverlay');
-            const messageElement = document.getElementById('securityMessage');
+            SMART_SECURITY.lastAlert = now;
+            SMART_SECURITY.violations++;
             
-            messageElement.innerHTML = `
-                <strong>${violationType}</strong><br>
-                ${details}<br><br>
-                🚨 VIOLATION ${ULTRA_SECURITY.violations}/${ULTRA_SECURITY.maxViolations} 🚨<br>
-                SESSION ENREGISTRÉE ET TRACÉE<br>
-                <small>ID: ${ULTRA_SECURITY.sessionId}</small>
-            `;
+            const notification = document.getElementById('securityNotification');
+            const titleElement = document.getElementById('notificationTitle');
+            const messageElement = document.getElementById('notificationMessage');
+            const countdownElement = document.getElementById('notificationCountdown');
             
-            overlay.style.display = 'flex';
+            titleElement.textContent = title;
+            messageElement.innerHTML = `${message}<br><small>Violation #${SMART_SECURITY.violations} - Session surveillée</small>`;
             
-            // Countdown plus long et plus visible
-            let countdown = 5;
-            const countdownElement = document.getElementById('countdown');
+            notification.style.display = 'block';
             
-            const timer = setInterval(() => {
-                countdown--;
-                countdownElement.textContent = countdown;
+            // Countdown discret
+            let timeLeft = Math.ceil(duration / 1000);
+            countdownElement.textContent = `Fermeture dans ${timeLeft}s`;
+            
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdownElement.textContent = `Fermeture dans ${timeLeft}s`;
                 
-                if (countdown <= 0) {
-                    clearInterval(timer);
-                    overlay.style.display = 'none';
-                    ULTRA_SECURITY.alertActive = false;
-                    
-                    // Fermeture automatique après 3 violations
-                    if (ULTRA_SECURITY.violations >= ULTRA_SECURITY.maxViolations) {
-                        alert('TROP DE VIOLATIONS DÉTECTÉES\nSESSION TERMINÉE AUTOMATIQUEMENT\nContactez l\'administrateur si nécessaire.');
-                        window.location.href = 'about:blank';
-                    }
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
                 }
             }, 1000);
             
-            console.log(`🚨 ULTRA VIOLATION: ${violationType} - Session: ${ULTRA_SECURITY.sessionId}`);
-        }
-
-        // PROTECTION TOTALE - ÉVÉNEMENTS MULTIPLES
-        function setupUltraProtection() {
-            const events = ['contextmenu', 'selectstart', 'dragstart', 'drop', 'copy', 'cut', 'paste'];
+            // Masquer automatiquement
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                    notification.style.animation = 'slideIn 0.3s ease-out';
+                }, 300);
+            }, duration);
             
-            events.forEach(eventType => {
-                // Protection sur document
-                document.addEventListener(eventType, function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    showUltraAlert(`${eventType.toUpperCase()} INTERDIT`, 'Action bloquée par la sécurité PIVAR');
-                    return false;
-                }, true);
-                
-                // Protection sur window
-                window.addEventListener(eventType, function(e) {
-                    e.preventDefault();
-                    return false;
-                }, true);
-                
-                // Protection sur body
-                if (document.body) {
-                    document.body.addEventListener(eventType, function(e) {
-                        e.preventDefault();
-                        return false;
-                    }, true);
-                }
-            });
+            console.log(`📊 Security Event: ${title} - ${message}`);
         }
 
-        // PROTECTION CLAVIER ULTRA-RENFORCÉE
-        function setupKeyboardProtection() {
-            document.addEventListener('keydown', function(e) {
-                let blocked = false;
-                let reason = '';
-                
-                // LISTE EXHAUSTIVE DES TOUCHES INTERDITES
-                const forbiddenKeys = [
-                    // Print Screen sous toutes ses formes
-                    'PrintScreen', 'Print', 'Snapshot', 'F13',
-                    // Touches fonction
-                    'F1', 'F2', 'F3', 'F4', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-                    // Navigation système
-                    'Insert', 'Delete', 'Home', 'End', 'PageUp', 'PageDown'
-                ];
-                
-                // Vérification des codes de touches aussi
-                const forbiddenCodes = [44, 42, 124, 183, 122, 123]; // Print Screen variants
-                
-                if (forbiddenKeys.includes(e.key) || forbiddenCodes.includes(e.keyCode)) {
-                    blocked = true;
-                    reason = `TOUCHE ${e.key || 'SYSTÈME'} INTERDITE`;
-                }
-                // TOUTES combinaisons avec Ctrl
-                else if (e.ctrlKey) {
-                    blocked = true;
-                    reason = `CTRL+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
-                }
-                // TOUTES combinaisons avec Alt
-                else if (e.altKey) {
-                    blocked = true;
-                    reason = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
-                }
-                // TOUTES combinaisons avec Meta (Windows/Cmd)
-                else if (e.metaKey) {
-                    blocked = true;
-                    reason = `WIN/CMD+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
-                }
-                // Combinaisons avec Shift (sauf saisie normale)
-                else if (e.shiftKey && ['F10', 'Insert', 'Delete'].includes(e.key)) {
-                    blocked = true;
-                    reason = `SHIFT+${e.key} INTERDIT`;
-                }
-                
-                if (blocked) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    showUltraAlert(reason, 'Combinaison de touches bloquée');
-                    return false;
-                }
-            }, true);
-        }
-
-        // PROTECTION SOURIS ULTRA
-        function setupMouseProtection() {
-            // Tous les événements souris
-            const mouseEvents = ['mousedown', 'mouseup', 'click', 'dblclick', 'mousemove'];
-            
-            mouseEvents.forEach(eventType => {
-                document.addEventListener(eventType, function(e) {
-                    // Bloquer clic droit (bouton 2)
-                    if (e.button === 2 || e.which === 3) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        showUltraAlert('CLIC DROIT INTERDIT', 'Menu contextuel désactivé');
-                        return false;
-                    }
-                    
-                    // Bloquer double-clic pour sélection
-                    if (eventType === 'dblclick') {
-                        e.preventDefault();
-                        showUltraAlert('DOUBLE-CLIC INTERDIT', 'Sélection rapide bloquée');
-                        return false;
-                    }
-                    
-                    // Bloquer sélection par glissement
-                    if (eventType === 'mousedown' && e.button === 0) {
-                        // Autoriser uniquement dans l'iframe (approximativement)
-                        const iframe = document.querySelector('.questionnaire-frame');
-                        const rect = iframe.getBoundingClientRect();
-                        const isInIframe = e.clientX >= rect.left && e.clientX <= rect.right && 
-                                         e.clientY >= rect.top && e.clientY <= rect.bottom;
-                        
-                        if (!isInIframe) {
-                            e.preventDefault();
-                        }
-                    }
-                }, true);
-            });
-        }
-
-        // DÉTECTION DEVTOOLS ULTRA-SENSIBLE
-        function setupDevToolsDetection() {
-            let devToolsOpen = false;
-            
-            function checkDevTools() {
-                const threshold = 100; // Plus sensible
-                const heightDiff = window.outerHeight - window.innerHeight;
-                const widthDiff = window.outerWidth - window.innerWidth;
-                
-                if (heightDiff > threshold || widthDiff > threshold) {
-                    if (!devToolsOpen) {
-                        devToolsOpen = true;
-                        document.getElementById('devtoolsAlert').style.display = 'flex';
-                        showUltraAlert('OUTILS DÉVELOPPEUR DÉTECTÉS', 'Fermer immédiatement F12');
-                    }
-                } else {
-                    if (devToolsOpen) {
-                        devToolsOpen = false;
-                        document.getElementById('devtoolsAlert').style.display = 'none';
-                    }
-                }
+        // PROTECTION CLIC DROIT (sur l'interface uniquement)
+        document.addEventListener('contextmenu', function(e) {
+            // Ne pas bloquer dans l'iframe (permettre le questionnaire)
+            if (e.target.closest('iframe')) {
+                return true;
             }
             
-            // Vérification continue très fréquente
-            setInterval(checkDevTools, 200);
-        }
-
-        // PROTECTION OVERLAY IFRAME
-        function setupIframeProtection() {
-            const overlay = document.getElementById('iframeOverlay');
-            
-            overlay.addEventListener('click', function(e) {
-                // Permettre le clic dans l'iframe en retirant temporairement l'overlay
-                overlay.style.pointerEvents = 'none';
-                
-                // Remettre la protection après 100ms
-                setTimeout(() => {
-                    overlay.style.pointerEvents = 'auto';
-                }, 100);
-            });
-            
-            // Protection contre les tentatives de suppression de l'overlay
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                        // Vérifier que l'overlay est toujours là
-                        if (!document.getElementById('iframeOverlay')) {
-                            showUltraAlert('MANIPULATION DOM DÉTECTÉE', 'Tentative de contournement bloquée');
-                            location.reload(); // Recharger la page
-                        }
-                    }
-                });
-            });
-            
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-                attributes: true
-            });
-        }
-
-        // INITIALISATION COMPLÈTE
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initialisation ULTRA SECURITY...');
-            
-            setupUltraProtection();
-            setupKeyboardProtection();
-            setupMouseProtection();
-            setupDevToolsDetection();
-            setupIframeProtection();
-            
-            console.log('✅ ULTRA SECURITY ACTIVE');
-            
-            // Message de bienvenue sécurisé
-            setTimeout(() => {
-                if (!sessionStorage.getItem('pivar-ultra-welcome')) {
-                    showUltraAlert('BIENVENUE SUR PIVAR', 'Plateforme ultra-sécurisée - Respectez les consignes');
-                    sessionStorage.setItem('pivar-ultra-welcome', 'shown');
-                }
-            }, 3000);
+            e.preventDefault();
+            showSmartNotification('Clic droit détecté', 'Menu contextuel désactivé sur l\'interface PIVAR');
+            return false;
         });
 
-        // PROTECTIONS SUPPLÉMENTAIRES
-        
-        // Désactiver le cache pour éviter les contournements
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for(let registration of registrations) {
-                    registration.unregister();
+        // PROTECTION CLAVIER INTELLIGENTE
+        document.addEventListener('keydown', function(e) {
+            let shouldBlock = false;
+            let alertTitle = '';
+            let alertMessage = '';
+            
+            // Print Screen - toutes variantes
+            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || 
+                e.keyCode === 44 || e.keyCode === 42 || e.keyCode === 124) {
+                shouldBlock = true;
+                alertTitle = 'Capture d\'écran détectée';
+                alertMessage = 'Print Screen désactivé pour protéger le contenu';
+            }
+            // F12 et outils développeur
+            else if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) {
+                shouldBlock = true;
+                alertTitle = 'Outils développeur';
+                alertMessage = 'Accès aux outils de développement restreint';
+            }
+            // Ctrl+U (voir source)
+            else if (e.ctrlKey && e.key === 'u') {
+                shouldBlock = true;
+                alertTitle = 'Code source';
+                alertMessage = 'Affichage du code source désactivé';
+            }
+            // Ctrl+S (sauvegarder)
+            else if (e.ctrlKey && e.key === 's') {
+                shouldBlock = true;
+                alertTitle = 'Sauvegarde détectée';
+                alertMessage = 'Sauvegarde de la page désactivée';
+            }
+            // Ctrl+P (imprimer)
+            else if (e.ctrlKey && e.key === 'p') {
+                shouldBlock = true;
+                alertTitle = 'Impression détectée';
+                alertMessage = 'Impression de la page désactivée';
+            }
+            
+            if (shouldBlock) {
+                e.preventDefault();
+                e.stopPropagation();
+                showSmartNotification(alertTitle, alertMessage);
+                return false;
+            }
+        });
+
+        // PROTECTION SÉLECTION (interface uniquement)
+        document.addEventListener('selectstart', function(e) {
+            // Permettre la sélection dans l'iframe
+            if (e.target.closest('iframe')) {
+                return true;
+            }
+            
+            // Bloquer sur l'interface PIVAR
+            if (e.target.closest('.header-banner, .progress-bar, .security-notice, .footer')) {
+                e.preventDefault();
+                showSmartNotification('Sélection restreinte', 'Sélection désactivée sur l\'interface de navigation');
+                return false;
+            }
+        });
+
+        // DÉTECTION DEVTOOLS PASSIVE
+        let devToolsWarningShown = false;
+        function checkDevTools() {
+            const threshold = 200;
+            const heightDiff = window.outerHeight - window.innerHeight;
+            const widthDiff = window.outerWidth - window.innerWidth;
+            
+            if ((heightDiff > threshold || widthDiff > threshold) && !devToolsWarningShown) {
+                devToolsWarningShown = true;
+                showSmartNotification('Outils développeur détectés', 'Session surveillée - Utilisation normale recommandée', 6000);
+                
+                // Reset du warning après 30 secondes
+                setTimeout(() => {
+                    devToolsWarningShown = false;
+                }, 30000);
+            }
+        }
+
+        // PROTECTION MOBILE
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            console.log('📱 Mode mobile détecté');
+            
+            // Gestes de capture sur mobile
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length >= 3) {
+                    showSmartNotification('Geste mobile détecté', 'Capture d\'écran mobile suspectée');
                 }
             });
         }
-        
-        // Protection contre la console
-        (function() {
-            let devtools = {open: false, orientation: null};
-            const threshold = 160;
-            setInterval(function() {
-                if (window.outerHeight - window.innerHeight > threshold || 
-                    window.outerWidth - window.innerWidth > threshold) {
-                    if (!devtools.open) {
-                        devtools.open = true;
-                        showUltraAlert('CONSOLE DÉVELOPPEUR', 'Accès non autorisé détecté');
-                    }
-                } else {
-                    devtools.open = false;
+
+        // INITIALISATION
+        window.addEventListener('load', function() {
+            console.log('✅ PIVAR Smart Security initialisé');
+            
+            // Vérification DevTools moins agressive
+            setInterval(checkDevTools, 3000);
+            
+            // Message de bienvenue
+            setTimeout(() => {
+                if (!sessionStorage.getItem('pivar-smart-welcome')) {
+                    showSmartNotification('Bienvenue sur PIVAR', 'Plateforme sécurisée - Évaluation en cours de protection', 5000);
+                    sessionStorage.setItem('pivar-smart-welcome', 'shown');
                 }
-            }, 500);
-        })();
-        
-        // Message final pour développeurs
-        console.log('%c🛡️ PIVAR ULTRA SECURITY', 'color: red; font-size: 24px; font-weight: bold;');
-        console.log('%cSystème de protection avancé actif', 'color: orange; font-size: 16px;');
-        console.log('%cToute tentative de contournement est détectée et enregistrée', 'color: red; font-size: 14px;');
+            }, 2000);
+        });
+
+        // LOG DE FERMETURE
+        window.addEventListener('beforeunload', function() {
+            console.log(`📊 Session PIVAR terminée - ${SMART_SECURITY.violations} violations détectées`);
+        });
+
+        // Message développeur discret
+        console.log('%c🛡️ PIVAR Smart Security', 'color: #28a745; font-size: 14px; font-weight: bold;');
+        console.log('%cSystème de protection intelligent - Utilisation normale autorisée', 'color: #6c757d; font-size: 12px;');
     </script>
 </body>
 </html>
