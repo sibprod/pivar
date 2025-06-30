@@ -2,57 +2,40 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PIVAR - Collecte Mobile Sécurisé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIVAR - Collecte Sécurisé</title>
     <style>
-        /* PROTECTION CSS MOBILE MAXIMALE */
+        /* STYLES PRINCIPAUX */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Blocage sélection absolu */
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
-            -ms-user-select: none !important;
             user-select: none !important;
-            /* Mobile spécifique */
-            -webkit-touch-callout: none !important;
-            -webkit-tap-highlight-color: transparent !important;
-            /* Drag & drop */
-            -webkit-user-drag: none !important;
-            -moz-user-drag: none !important;
         }
 
-        /* Annulation sélection visuelle */
-        *::selection { background: transparent !important; }
-        *::-moz-selection { background: transparent !important; }
-
-        /* AUTORISER sélection uniquement dans iframe */
-        iframe * {
-            -webkit-user-select: auto !important;
-            -moz-user-select: auto !important;
-            user-select: auto !important;
-        }
-
-        html, body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            /* Empêcher zoom */
-            touch-action: pan-x pan-y;
-            overflow-x: hidden;
+        }
+
+        /* INTERFACE DESKTOP */
+        .desktop-interface {
+            display: block;
         }
 
         .header-banner {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
-            padding: 12px;
+            padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .header-banner h1 {
-            font-size: 16px;
+            font-size: 20px;
             margin: 0;
         }
 
@@ -61,350 +44,339 @@
             color: white;
             text-align: center;
             padding: 8px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 500;
         }
 
         .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            min-height: calc(100vh - 80px);
-            position: relative;
+            min-height: calc(100vh - 100px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        .mobile-warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 12px;
+        .security-notice {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
             margin: 0;
-            font-size: 12px;
-            color: #856404;
+            font-size: 13px;
+            color: #155724;
             text-align: center;
-            font-weight: 500;
         }
 
         .questionnaire-frame {
             width: 100%;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 160px);
             border: none;
             display: block;
         }
 
-        /* ALERTE MOBILE SPÉCIFIQUE */
-        .mobile-alert {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            color: #333;
-            padding: 20px;
-            border-radius: 15px;
-            border: 3px solid #dc3545;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            z-index: 999999;
-            display: none;
+        .footer {
+            background: #f8f9fa;
             text-align: center;
-            max-width: 90%;
-            font-size: 14px;
+            padding: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
         }
 
-        .alert-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #dc3545;
-        }
-
-        .alert-message {
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .alert-countdown {
-            font-size: 1rem;
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        /* WATERMARKS MOBILES */
-        .mobile-watermark {
-            position: fixed;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 1rem;
-            color: rgba(220, 53, 69, 0.1);
-            z-index: 1;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-
-        /* INDICATEUR SURVEILLANCE MOBILE */
-        .mobile-status {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: #dc3545;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 10px;
-            font-size: 9px;
-            z-index: 1000;
-        }
-
-        /* Empêcher screenshots par overlay (partiel) */
-        .screenshot-protection {
+        /* BLOCAGE MOBILE */
+        .mobile-blocker {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: transparent;
-            z-index: 1;
-            pointer-events: none;
+            height: 100vh;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .mobile-blocker-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+        }
+
+        .mobile-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .mobile-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .mobile-message {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .mobile-instructions {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mobile-contact {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* RESPONSIVE - ACTIVATION BLOCAGE MOBILE */
+        @media (max-width: 768px) {
+            .desktop-interface {
+                display: none !important;
+            }
+            
+            .mobile-blocker {
+                display: flex !important;
+            }
+        }
+
+        /* STYLES TABLETTE */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .header-banner h1 {
+                font-size: 18px;
+            }
+            
+            .main-container {
+                margin: 0 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Protection overlay -->
-    <div class="screenshot-protection"></div>
-
-    <!-- Watermark mobile -->
-    <div class="mobile-watermark">PIVAR MOBILE SURVEILLÉ</div>
-
-    <!-- Status surveillance -->
-    <div class="mobile-status" id="mobileStatus">
-        📱 Surveillé
-    </div>
-
-    <!-- En-tête mobile adapté -->
-    <div class="header-banner">
-        <h1>🧠 PIVAR – Évaluation Mobile Sécurisée</h1>
-    </div>
-
-    <!-- Barre de progression mobile -->
-    <div class="progress-bar">
-        📊 COLLECTE 2/7 • Mobile sécurisé
-    </div>
-
-    <!-- Conteneur principal -->
-    <div class="main-container">
-        <!-- Avertissement mobile -->
-        <div class="mobile-warning">
-            📱 MODE MOBILE • Questionnaire surveillé • Captures d'écran détectées = exclusion • Droits d'auteur protégés
+    <!-- INTERFACE DESKTOP -->
+    <div class="desktop-interface">
+        <!-- En-tête -->
+        <div class="header-banner">
+            <h1>🧠 PIVAR – Protocole d'identification et de valorisation de l'action et de la réussite</h1>
+            <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme sécurisée d'évaluation comportementale</p>
         </div>
 
-        <!-- Questionnaire -->
-        <iframe 
-            class="questionnaire-frame" 
-            src="https://formulaires.pivar.info/r/wMG4Lg"
-            title="Questionnaire PIVAR Mobile"
-            allowtransparency="true"
-            sandbox="allow-scripts allow-forms allow-same-origin">
-        </iframe>
+        <!-- Barre de progression -->
+        <div class="progress-bar">
+            📊 QUESTIONNAIRE 2/7 : PILIER COLLECTE • Session sécurisée • Version desktop requise
+        </div>
+
+        <!-- Conteneur principal -->
+        <div class="main-container">
+            <!-- Notice -->
+            <div class="security-notice">
+                ✅ Session sécurisée • Questionnaires protégés par droits d'auteur • Version desktop optimisée
+            </div>
+
+            <!-- Questionnaire Tally -->
+            <iframe 
+                class="questionnaire-frame" 
+                src="https://formulaires.pivar.info/r/wMG4Lg"
+                title="Questionnaire PIVAR Collecte"
+                allowtransparency="true"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-popups">
+            </iframe>
+
+            <!-- Pied de page -->
+            <div class="footer">
+                PIVAR © 2025 • Version desktop • Questionnaires protégés par droits d'auteur
+            </div>
+        </div>
     </div>
 
-    <!-- ALERTE MOBILE -->
-    <div id="mobileAlert" class="mobile-alert">
-        <div class="alert-title" id="alertTitle">⚠️ Action Détectée</div>
-        <div class="alert-message" id="alertMessage">Message</div>
-        <div class="alert-countdown">Retour dans <span id="countdown">5</span>s</div>
+    <!-- BLOCAGE MOBILE -->
+    <div class="mobile-blocker">
+        <div class="mobile-blocker-content">
+            <div class="mobile-icon">🖥️</div>
+            
+            <div class="mobile-title">
+                Version Desktop Requise
+            </div>
+            
+            <div class="mobile-message">
+                <strong>Les questionnaires PIVAR nécessitent un ordinateur desktop.</strong><br><br>
+                Pour des raisons de sécurité et de protection des droits d'auteur, 
+                notre plateforme n'est accessible que depuis un ordinateur.
+            </div>
+            
+            <div class="mobile-instructions">
+                <strong>📋 Instructions :</strong><br>
+                • Utilisez un ordinateur (Windows, Mac, Linux)<br>
+                • Navigateur recommandé : Chrome, Firefox, Edge<br>
+                • Écran minimum : 13 pouces<br>
+                • Connexion internet stable requise
+            </div>
+            
+            <div class="mobile-contact">
+                <strong>Besoin d'aide ?</strong><br>
+                Contactez notre équipe :<br>
+                📧 support@pivar.fr<br>
+                📱 01 23 45 67 89
+            </div>
+        </div>
     </div>
 
     <script>
-        // VARIABLES MOBILES
-        let mobileViolations = 0;
-        const sessionId = 'MOBILE_' + Date.now().toString(36);
-        let alertActive = false;
-        let lastViolation = 0;
+        // DÉTECTION PRÉCISE DU DEVICE
+        const isMobile = /Android(?!.*Tablet)|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isTablet = /iPad|Android.*Tablet|Windows.*Touch/i.test(navigator.userAgent) ||
+                        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const screenWidth = window.innerWidth;
+        
+        console.log('📱 Device Detection:', {
+            userAgent: navigator.userAgent,
+            isMobile: isMobile,
+            isTablet: isTablet,
+            screenWidth: screenWidth
+        });
 
-        // Détection mobile
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const isAndroid = /Android/i.test(navigator.userAgent);
-
-        console.log('📱 PIVAR Mobile Protection - Device:', isMobile ? 'Mobile' : 'Desktop');
-        console.log('📱 OS détecté:', isIOS ? 'iOS' : isAndroid ? 'Android' : 'Autre');
-
-        // FONCTION VIOLATION MOBILE
-        function handleMobileViolation(type, method, details) {
-            const now = Date.now();
-            if (now - lastViolation < 2000 || alertActive) return; // Anti-spam 2 secondes
+        // LOGIQUE DE GESTION PAR DEVICE
+        if (isMobile) {
+            // MOBILE = BLOCAGE TOTAL
+            console.log('📱 Mobile détecté - Blocage activé');
+            document.querySelector('.mobile-title').textContent = 'Accès Mobile Interdit';
+            document.querySelector('.mobile-message').innerHTML = `
+                <strong>Les smartphones ne sont pas autorisés pour les questionnaires PIVAR.</strong><br><br>
+                Utilisez un ordinateur ou une tablette de grande taille (minimum 10 pouces).
+            `;
             
-            lastViolation = now;
-            mobileViolations++;
+        } else if (isTablet) {
+            // TABLETTE = AVERTISSEMENT + AUTORISATION CONDITIONNELLE
+            console.log('📱 Tablette détectée - Avertissement spécial');
             
-            console.log(`📱 VIOLATION MOBILE #${mobileViolations}: ${type} - ${method}`);
+            // Afficher avertissement tablette 5 secondes puis autoriser
+            document.querySelector('.mobile-title').textContent = 'Tablette Détectée';
+            document.querySelector('.mobile-message').innerHTML = `
+                <strong>⚠️ AVERTISSEMENT TABLETTE</strong><br><br>
+                Les tablettes offrent une protection limitée contre la copie.<br>
+                Toute violation sera détectée et sanctionnée immédiatement.<br><br>
+                <em>Accès autorisé dans <span id="tabletCountdown">5</span> secondes...</em>
+            `;
             
-            const alert = document.getElementById('mobileAlert');
-            const title = document.getElementById('alertTitle');
-            const message = document.getElementById('alertMessage');
-            
-            if (mobileViolations >= 2) {
-                // Exclusion rapide sur mobile (2 violations au lieu de 3)
-                title.textContent = '🚫 Parcours Suspendu';
-                message.innerHTML = `
-                    <strong>Violation mobile détectée : ${type}</strong><br><br>
-                    Sur mobile, les tentatives de capture sont plus facilement détectées.<br><br>
-                    Votre parcours est suspendu. Notre équipe reviendra vers vous.
-                `;
+            // Countdown tablette
+            let countdown = 5;
+            const countdownEl = document.getElementById('tabletCountdown');
+            const tabletTimer = setInterval(() => {
+                countdown--;
+                if (countdownEl) countdownEl.textContent = countdown;
                 
-                setTimeout(() => {
-                    alert('Parcours PIVAR suspendu (violation mobile).\nNotre équipe reprendra contact.');
-                    window.location.href = 'https://sibprod.github.io/pivar/droits-auteur.html?mobile=violation';
-                }, 6000);
-                
-            } else {
-                // Premier avertissement mobile
-                title.textContent = '📱 Avertissement Mobile';
-                message.innerHTML = `
-                    <strong>Action détectée : ${type}</strong><br><br>
-                    Les questionnaires PIVAR sont protégés par droits d'auteur.<br><br>
-                    Sur mobile, toute tentative de capture entraîne une exclusion immédiate.
-                `;
-            }
-            
-            alert.style.display = 'block';
-            alertActive = true;
-            startMobileCountdown();
-        }
-
-        // Countdown mobile
-        function startMobileCountdown() {
-            let seconds = 5;
-            const countdownEl = document.getElementById('countdown');
-            
-            const interval = setInterval(() => {
-                seconds--;
-                countdownEl.textContent = seconds;
-                
-                if (seconds <= 0) {
-                    clearInterval(interval);
-                    document.getElementById('mobileAlert').style.display = 'none';
-                    alertActive = false;
+                if (countdown <= 0) {
+                    clearInterval(tabletTimer);
+                    // Autoriser accès avec protections renforcées
+                    document.querySelector('.mobile-blocker').style.display = 'none';
+                    document.querySelector('.desktop-interface').style.display = 'block';
+                    
+                    // Activer protections tablette spéciales
+                    activateTabletProtections();
                 }
             }, 1000);
+            
+        } else {
+            // DESKTOP = ACCÈS NORMAL
+            console.log('🖥️ Desktop détecté - Accès autorisé');
+            activateDesktopProtections();
         }
 
-        // === PROTECTIONS MOBILES SPÉCIFIQUES ===
-
-        if (isMobile) {
-            // 1. GESTES MULTI-TOUCH (capture gestuelle)
+        // PROTECTIONS SPÉCIALES TABLETTE
+        function activateTabletProtections() {
+            console.log('📱 Activation protections tablette renforcées');
+            
+            // Seuil violation plus bas (2 au lieu de 3)
+            const maxViolationsTablet = 2;
+            
+            // Gestes tactiles
             document.addEventListener('touchstart', function(e) {
                 if (e.touches.length >= 2) {
                     e.preventDefault();
-                    handleMobileViolation('GESTE MULTI-TOUCH', 'SCREENSHOT_GESTURE', `${e.touches.length} doigts`);
+                    console.log('📱 Geste multi-touch tablette détecté');
+                    // Déclencher violation immédiate
+                    showTabletViolation('GESTE MULTI-TOUCH', 'Tentative capture tablette');
                 }
-            }, { passive: false });
-
-            // 2. APPUI LONG (menu contextuel mobile)
+            });
+            
+            // Appui long
             let touchTimer;
-            let touchStartTime;
-            
             document.addEventListener('touchstart', function(e) {
-                touchStartTime = Date.now();
                 touchTimer = setTimeout(() => {
-                    handleMobileViolation('APPUI LONG', 'CONTEXT_MENU', 'Menu contextuel mobile');
-                }, 800);
+                    console.log('📱 Appui long tablette détecté');
+                    showTabletViolation('APPUI LONG', 'Menu contextuel tablette');
+                }, 1000);
             });
             
-            document.addEventListener('touchend', function(e) {
+            document.addEventListener('touchend', function() {
                 clearTimeout(touchTimer);
-                const touchDuration = Date.now() - touchStartTime;
-                if (touchDuration > 1000) {
-                    handleMobileViolation('APPUI LONG', 'LONG_PRESS', `${touchDuration}ms`);
-                }
             });
-
-            // 3. CHANGEMENT ORIENTATION (capture suspectée)
+            
+            // Rotation écran
             window.addEventListener('orientationchange', function() {
-                setTimeout(() => {
-                    handleMobileViolation('ROTATION ÉCRAN', 'ORIENTATION_CHANGE', 'Capture suspectée');
-                }, 500);
-            });
-
-            // 4. SURVEILLANCE VISIBILITÉ (app background)
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden) {
-                    console.log('📱 App mise en arrière-plan - capture possible');
-                    // Ne pas alerter immédiatement (trop de faux positifs)
-                    setTimeout(() => {
-                        if (document.hidden) {
-                            handleMobileViolation('APP BACKGROUND', 'HIDDEN_CAPTURE', 'Capture en arrière-plan suspectée');
-                        }
-                    }, 3000);
-                }
-            });
-
-            // 5. DÉTECTION ZOOM (pinch to zoom)
-            let initialDistance = 0;
-            document.addEventListener('touchstart', function(e) {
-                if (e.touches.length === 2) {
-                    const touch1 = e.touches[0];
-                    const touch2 = e.touches[1];
-                    initialDistance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2)
-                    );
-                }
-            });
-
-            document.addEventListener('touchmove', function(e) {
-                if (e.touches.length === 2) {
-                    const touch1 = e.touches[0];
-                    const touch2 = e.touches[1];
-                    const currentDistance = Math.sqrt(
-                        Math.pow(touch2.pageX - touch1.pageX, 2) +
-                        Math.pow(touch2.pageY - touch1.pageY, 2)
-                    );
-                    
-                    if (Math.abs(currentDistance - initialDistance) > 50) {
-                        e.preventDefault();
-                        handleMobileViolation('ZOOM DÉTECTÉ', 'PINCH_ZOOM', 'Tentative zoom/capture');
-                    }
-                }
-            }, { passive: false });
-
-            // 6. PROTECTION SÉLECTION MOBILE
-            document.addEventListener('selectstart', function(e) {
-                if (!e.target.closest('iframe')) {
-                    e.preventDefault();
-                    handleMobileViolation('SÉLECTION MOBILE', 'TEXT_SELECT', 'Sélection de texte mobile');
-                    return false;
-                }
-            });
-
-        } else {
-            // Protection desktop classique si pas mobile
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                handleMobileViolation('CLIC DROIT', 'CONTEXT_MENU', 'Menu contextuel desktop');
-                return false;
+                console.log('📱 Rotation tablette détectée');
+                showTabletViolation('ROTATION ÉCRAN', 'Capture suspectée');
             });
         }
 
-        // === PROTECTIONS COMMUNES MOBILE/DESKTOP ===
-
-        // Clavier (si clavier connecté sur mobile)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'PrintScreen' || e.keyCode === 44 || 
-                (e.ctrlKey && ['C', 'A', 'V', 'S'].includes(e.key?.toUpperCase()))) {
+        // PROTECTIONS DESKTOP STANDARD
+        function activateDesktopProtections() {
+            console.log('🖥️ Activation protections desktop');
+            
+            // Clic droit
+            document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
-                handleMobileViolation('CLAVIER', `${e.ctrlKey ? 'CTRL+' : ''}${e.key}`, 'Raccourci clavier détecté');
+                console.log('🛡️ Clic droit desktop bloqué');
                 return false;
-            }
-        });
+            });
+            
+            // Clavier
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && ['c', 'a', 'v', 's'].includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                    console.log('🛡️ Raccourci clavier bloqué:', e.key);
+                    return false;
+                }
+            });
+        }
 
-        // INITIALISATION MOBILE
-        window.addEventListener('load', function() {
-            console.log('📱 PIVAR Mobile Protection initialisée');
-            document.getElementById('mobileStatus').textContent = 
-                `📱 ${isMobile ? (isIOS ? 'iOS' : 'Android') : 'Desktop'} Surveillé`;
-        });
+        // GESTION VIOLATIONS TABLETTE
+        function showTabletViolation(type, details) {
+            console.log(`📱 VIOLATION TABLETTE: ${type} - ${details}`);
+            
+            // Afficher alerte spéciale tablette
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background: #dc3545; color: white; padding: 30px; border-radius: 15px;
+                z-index: 999999; text-align: center; max-width: 90%;
+            `;
+            alertDiv.innerHTML = `
+                <h3>⚠️ VIOLATION TABLETTE</h3>
+                <p><strong>${type}</strong><br>${details}</p>
+                <p>Les tablettes sont surveillées de près.<br>Session suspendue.</p>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alert('Violation détectée sur tablette.\nSession suspendue.\nNotre équipe reviendra vers vous.');
+                window.location.href = 'https://sibprod.github.io/pivar/droits-auteur.html?device=tablet&violation=' + type;
+            }, 3000);
+        }
 
-        // Message développeur mobile
-        console.log('%c📱 PIVAR MOBILE SÉCURISÉ', 'color: blue; font-size: 16px; font-weight: bold;');
-        console.log('%cProtection partielle sur mobile - Captures natives non détectables', 'color: orange; font-size: 12px;');
+        // MESSAGE DÉVELOPPEUR
+        console.log('%c🛡️ PIVAR DESKTOP ONLY', 'color: blue; font-size: 16px; font-weight: bold;');
+        console.log('%cAccès mobile bloqué pour sécurité', 'color: orange; font-size: 12px;');
     </script>
 </body>
 </html>
