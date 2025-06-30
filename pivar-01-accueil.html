@@ -9,25 +9,30 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* PROTECTION CSS ABSOLUE */
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -khtml-user-select: none !important;
         }
+
+        /* BLOCAGE SÉLECTION GLOBAL */
+        *::selection { background: transparent !important; }
+        *::-moz-selection { background: transparent !important; }
+        *::-webkit-selection { background: transparent !important; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            /* Protection sélection sur l'interface uniquement */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        /* Permettre la sélection dans l'iframe */
-        iframe {
-            -webkit-user-select: auto !important;
-            -moz-user-select: auto !important;
-            -ms-user-select: auto !important;
-            user-select: auto !important;
+            /* PROTECTION DRAG & DROP */
+            -webkit-user-drag: none !important;
+            -khtml-user-drag: none !important;
+            -moz-user-drag: none !important;
+            -o-user-drag: none !important;
+            user-drag: none !important;
         }
 
         .header-banner {
@@ -58,16 +63,18 @@
             background: white;
             min-height: calc(100vh - 100px);
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .security-notice {
-            background: #e8f5e8;
-            border-left: 4px solid #28a745;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
             padding: 15px;
             margin: 0;
             font-size: 13px;
-            color: #155724;
+            color: #856404;
             text-align: center;
+            font-weight: 500;
         }
 
         .questionnaire-frame {
@@ -86,63 +93,91 @@
             border-top: 1px solid #dee2e6;
         }
 
-        /* NOTIFICATION DISCRÈTE (pas d'overlay qui bloque) */
-        .security-notification {
+        /* VIOLATIONS COUNTER VISIBLE */
+        .violations-counter {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             background: linear-gradient(135deg, #dc3545, #c82333);
             color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.4);
-            z-index: 10000;
-            display: none;
-            max-width: 350px;
-            border-left: 5px solid #fff;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-
-        .notification-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
-
-        .notification-message {
+            padding: 8px 15px;
+            border-radius: 20px;
             font-size: 12px;
-            line-height: 1.3;
-            margin-bottom: 8px;
+            font-weight: bold;
+            z-index: 10000;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
         }
 
-        .notification-countdown {
-            font-size: 11px;
-            opacity: 0.8;
-            text-align: right;
-        }
-
-        /* Watermark discret */
-        .watermark {
+        /* ALERTES D'ESCALADE */
+        .escalade-alert {
             position: fixed;
-            bottom: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 3px solid #dc3545;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            z-index: 999999;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            display: none;
+            text-align: center;
+        }
+
+        .alert-level-1 { border-color: #ffc107; }
+        .alert-level-2 { border-color: #fd7e14; }
+        .alert-level-3 { border-color: #dc3545; animation: shake 0.5s infinite; }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            25% { transform: translate(-50%, -50%) translateX(-5px); }
+            75% { transform: translate(-50%, -50%) translateX(5px); }
+        }
+
+        .alert-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #dc3545;
+        }
+
+        .alert-message {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .alert-countdown {
+            font-size: 1.2rem;
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .close-alert-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* WATERMARKS */
+        .watermark-tracking {
+            position: fixed;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 10px;
-            color: rgba(108, 117, 125, 0.3);
+            color: rgba(108, 117, 125, 0.4);
+            z-index: 1000;
             pointer-events: none;
-            z-index: 1;
+            text-align: center;
         }
 
         /* Styles mobiles */
@@ -157,53 +192,40 @@
             .questionnaire-frame {
                 height: calc(100vh - 140px);
             }
-            .security-notification {
-                right: 10px;
-                left: 10px;
+            .escalade-alert {
+                margin: 20px;
                 max-width: none;
+                left: 20px;
+                right: 20px;
+                transform: translateY(-50%);
             }
         }
 
-        /* Indicateur de session sécurisée */
-        .security-indicator {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: rgba(40, 167, 69, 0.9);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 10px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .security-dot {
-            width: 6px;
-            height: 6px;
-            background: #fff;
-            border-radius: 50%;
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
+        /* PROTECTION PRINT */
+        @media print {
+            body * { visibility: hidden !important; }
+            body::before {
+                content: "DOCUMENT PROTÉGÉ - IMPRESSION INTERDITE";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 2rem;
+                color: red;
+                visibility: visible !important;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Indicateur de session sécurisée -->
-    <div class="security-indicator">
-        <div class="security-dot"></div>
-        Session sécurisée
+    <!-- Compteur de violations visible -->
+    <div class="violations-counter" id="violationsCounter">
+        🛡️ Violations: <span id="violationCount">0</span>/4
     </div>
 
-    <!-- Watermark discret -->
-    <div class="watermark">
-        PIVAR - Évaluation Protégée © 2025
+    <!-- Watermark de session -->
+    <div class="watermark-tracking" id="sessionWatermark">
+        Session PIVAR sécurisée • ID: <span id="sessionDisplay"></span>
     </div>
 
     <!-- En-tête professionnel PIVAR -->
@@ -221,7 +243,7 @@
     <div class="main-container">
         <!-- Notice de sécurité -->
         <div class="security-notice">
-            ✅ Session sécurisée active • Vos données sont protégées • Évaluation confidentielle
+            ⚠️ ÉVALUATION SOUS SURVEILLANCE • Votre activité est enregistrée • Maximum 4 violations autorisées avant exclusion
         </div>
 
         <!-- Questionnaire Tally intégré -->
@@ -230,215 +252,306 @@
             src="https://formulaires.pivar.info/r/mJog7Y"
             title="Questionnaire PIVAR Sécurisé"
             allowtransparency="true"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
             referrerpolicy="no-referrer-when-downgrade">
         </iframe>
 
         <!-- Pied de page -->
         <div class="footer">
-            PIVAR © 2025 • Toute reproduction interdite
+            PIVAR © 2025 • Toute reproduction interdite • Violations enregistrées et signalées
         </div>
     </div>
 
-    <!-- NOTIFICATION DISCRÈTE (ne bloque pas l'écran) -->
-    <div id="securityNotification" class="security-notification">
-        <div class="notification-title">
-            🛡️ <span id="notificationTitle">Sécurité PIVAR</span>
+    <!-- ALERTE D'ESCALADE -->
+    <div id="escaladeAlert" class="escalade-alert">
+        <div class="alert-title" id="alertTitle">
+            🚨 VIOLATION DÉTECTÉE
         </div>
-        <div class="notification-message" id="notificationMessage">
-            Action détectée
+        <div class="alert-message" id="alertMessage">
+            Action non autorisée
         </div>
-        <div class="notification-countdown">
-            <span id="notificationCountdown"></span>
+        <div class="alert-countdown" id="alertCountdown">
+            Fermeture dans <span id="countdown">5</span>s
         </div>
+        <button class="close-alert-btn" onclick="closeAlert()">
+            J'AI COMPRIS
+        </button>
     </div>
 
     <script>
-        // Configuration intelligente
-        const SMART_SECURITY = {
-            sessionId: 'PIVAR_SMART_' + Date.now(),
-            violations: 0,
-            lastAlert: 0,
-            alertCooldown: 2000, // 2 secondes entre alertes
-            enabled: true
+        // RÉCUPÉRATION AUTOMATIQUE DONNÉES CANDIDAT
+        function getCandidatFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                nom: urlParams.get('nom') || urlParams.get('name') || 'CANDIDAT_INCONNU',
+                prenom: urlParams.get('prenom') || urlParams.get('firstname') || '',
+                email: urlParams.get('email') || '',
+                code: urlParams.get('code') || urlParams.get('access_code') || ''
+            };
+        }
+
+        // SYSTÈME D'ESCALADE PROGRESSIVE
+        const PIVAR_ESCALADE = {
+            sessionId: 'PIVAR_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+            candidat: getCandidatFromURL(),
+            violations: [],
+            violationCount: 0,
+            maxViolations: 4,
+            ip: 'Récupération...',
+            startTime: new Date(),
+            lastViolation: 0
         };
 
-        console.log('🛡️ PIVAR Smart Security - Session:', SMART_SECURITY.sessionId);
+        // Récupération IP
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                PIVAR_ESCALADE.ip = data.ip;
+                updateDisplay();
+            })
+            .catch(() => {
+                PIVAR_ESCALADE.ip = 'IP_MASQUÉE';
+                updateDisplay();
+            });
 
-        // Notification discrète (ne bloque pas l'utilisateur)
-        function showSmartNotification(title, message, duration = 4000) {
+        // Mise à jour affichage
+        function updateDisplay() {
+            document.getElementById('sessionDisplay').textContent = PIVAR_ESCALADE.sessionId.substring(6, 16);
+            document.getElementById('violationCount').textContent = PIVAR_ESCALADE.violationCount;
+        }
+
+        // GESTION DES VIOLATIONS AVEC ESCALADE
+        function handleViolation(violationType, details) {
             const now = Date.now();
             
-            // Éviter le spam de notifications
-            if (now - SMART_SECURITY.lastAlert < SMART_SECURITY.alertCooldown) {
+            // Éviter spam (1 seconde entre violations)
+            if (now - PIVAR_ESCALADE.lastViolation < 1000) {
                 return;
             }
             
-            SMART_SECURITY.lastAlert = now;
-            SMART_SECURITY.violations++;
+            PIVAR_ESCALADE.lastViolation = now;
+            PIVAR_ESCALADE.violationCount++;
             
-            const notification = document.getElementById('securityNotification');
-            const titleElement = document.getElementById('notificationTitle');
-            const messageElement = document.getElementById('notificationMessage');
-            const countdownElement = document.getElementById('notificationCountdown');
+            const violation = {
+                id: PIVAR_ESCALADE.violationCount,
+                timestamp: new Date().toISOString(),
+                type: violationType,
+                details: details,
+                sessionId: PIVAR_ESCALADE.sessionId,
+                ip: PIVAR_ESCALADE.ip,
+                candidat: PIVAR_ESCALADE.candidat.nom
+            };
             
-            titleElement.textContent = title;
-            messageElement.innerHTML = `${message}<br><small>Violation #${SMART_SECURITY.violations} - Session surveillée</small>`;
+            PIVAR_ESCALADE.violations.push(violation);
+            updateDisplay();
             
-            notification.style.display = 'block';
+            // LOG VISIBLE (dissuasion)
+            console.log(`🚨 VIOLATION #${PIVAR_ESCALADE.violationCount}:`, violation);
             
-            // Countdown discret
-            let timeLeft = Math.ceil(duration / 1000);
-            countdownElement.textContent = `Fermeture dans ${timeLeft}s`;
+            // ESCALADE SELON LE NOMBRE DE VIOLATIONS
+            showEscaladeAlert(PIVAR_ESCALADE.violationCount, violationType);
+        }
+
+        // ALERTES D'ESCALADE PROGRESSIVE
+        function showEscaladeAlert(violationNumber, violationType) {
+            const alert = document.getElementById('escaladeAlert');
+            const title = document.getElementById('alertTitle');
+            const message = document.getElementById('alertMessage');
             
-            const countdownInterval = setInterval(() => {
-                timeLeft--;
-                countdownElement.textContent = `Fermeture dans ${timeLeft}s`;
+            // Supprimer les classes d'escalade précédentes
+            alert.classList.remove('alert-level-1', 'alert-level-2', 'alert-level-3');
+            
+            if (violationNumber === 1) {
+                // PREMIÈRE VIOLATION - AVERTISSEMENT
+                alert.classList.add('alert-level-1');
+                title.innerHTML = '⚠️ PREMIÈRE VIOLATION';
+                message.innerHTML = `
+                    <strong>${violationType} détecté</strong><br><br>
+                    <strong>AVERTISSEMENT :</strong> Cette action est interdite.<br>
+                    Vous disposez encore de <strong>${PIVAR_ESCALADE.maxViolations - violationNumber} tentatives</strong> avant exclusion.<br><br>
+                    <em>Votre session est enregistrée.</em>
+                `;
                 
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
+            } else if (violationNumber === 2) {
+                // DEUXIÈME VIOLATION - SÉRIEUX
+                alert.classList.add('alert-level-2');
+                title.innerHTML = '🔶 DEUXIÈME VIOLATION';
+                message.innerHTML = `
+                    <strong>${violationType} détecté</strong><br><br>
+                    <strong>ATTENTION :</strong> Comportement répété non autorisé.<br>
+                    Plus que <strong>${PIVAR_ESCALADE.maxViolations - violationNumber} violations</strong> autorisées.<br><br>
+                    <em>Un rapport est en cours de génération.</em>
+                `;
+                
+            } else if (violationNumber === 3) {
+                // TROISIÈME VIOLATION - DERNIER AVERTISSEMENT
+                alert.classList.add('alert-level-3');
+                title.innerHTML = '🚨 DERNIER AVERTISSEMENT';
+                message.innerHTML = `
+                    <strong>${violationType} - 3ème violation</strong><br><br>
+                    <strong>⚠️ DERNIÈRE CHANCE :</strong><br>
+                    Une violation supplémentaire entraînera :<br>
+                    • <strong>Fermeture immédiate</strong> de votre session<br>
+                    • <strong>Capture d'écran</strong> de votre violation<br>
+                    • <strong>Contact par un membre</strong> de notre équipe<br><br>
+                    <strong>Candidat :</strong> ${PIVAR_ESCALADE.candidat.prenom} ${PIVAR_ESCALADE.candidat.nom}<br>
+                    <strong>Email :</strong> ${PIVAR_ESCALADE.candidat.email}<br>
+                    <em style="color: #dc3545;">Votre IP ${PIVAR_ESCALADE.ip} est enregistrée.</em>
+                `;
+                
+            } else if (violationNumber >= 4) {
+                // QUATRIÈME+ VIOLATION - EXCLUSION
+                alert.classList.add('alert-level-3');
+                title.innerHTML = '🚫 SESSION TERMINÉE';
+                message.innerHTML = `
+                    <strong>EXCLUSION AUTOMATIQUE</strong><br><br>
+                    Trop de violations détectées (${violationNumber}).<br><br>
+                    <strong>Actions automatiques :</strong><br>
+                    • Fermeture de votre session<br>
+                    • Rapport envoyé à notre équipe<br>
+                    • Un membre PIVAR vous contactera<br><br>
+                    <strong>Session :</strong> ${PIVAR_ESCALADE.sessionId}<br>
+                    <strong>IP :</strong> ${PIVAR_ESCALADE.ip}
+                `;
+                
+                // FERMETURE APRÈS 8 SECONDES
+                setTimeout(() => {
+                    generateViolationReport();
+                    alert('Session terminée pour violations répétées.\nUn rapport a été transmis à notre équipe.\nVous serez contacté(e) prochainement.');
+                    window.location.href = 'about:blank';
+                }, 8000);
+            }
+            
+            alert.style.display = 'block';
+            startCountdown();
+        }
+
+        // COUNTDOWN AUTOMATIQUE
+        function startCountdown() {
+            let seconds = 5;
+            const countdownElement = document.getElementById('countdown');
+            
+            const interval = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    closeAlert();
                 }
             }, 1000);
-            
-            // Masquer automatiquement
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                    notification.style.animation = 'slideIn 0.3s ease-out';
-                }, 300);
-            }, duration);
-            
-            console.log(`📊 Security Event: ${title} - ${message}`);
         }
 
-        // PROTECTION CLIC DROIT (sur l'interface uniquement)
-        document.addEventListener('contextmenu', function(e) {
-            // Ne pas bloquer dans l'iframe (permettre le questionnaire)
-            if (e.target.closest('iframe')) {
-                return true;
-            }
-            
-            e.preventDefault();
-            showSmartNotification('Clic droit détecté', 'Menu contextuel désactivé sur l\'interface PIVAR');
-            return false;
-        });
+        // FERMER L'ALERTE
+        function closeAlert() {
+            document.getElementById('escaladeAlert').style.display = 'none';
+        }
 
-        // PROTECTION CLAVIER INTELLIGENTE
+        // GÉNÉRATION RAPPORT DE VIOLATION
+        function generateViolationReport() {
+            const report = {
+                session_id: PIVAR_ESCALADE.sessionId,
+                candidat: PIVAR_ESCALADE.candidat,
+                ip: PIVAR_ESCALADE.ip,
+                start_time: PIVAR_ESCALADE.startTime.toISOString(),
+                end_time: new Date().toISOString(),
+                total_violations: PIVAR_ESCALADE.violationCount,
+                violations_detail: PIVAR_ESCALADE.violations,
+                user_agent: navigator.userAgent,
+                url: window.location.href
+            };
+            
+            console.log('📄 RAPPORT DE VIOLATION GÉNÉRÉ:', report);
+            
+            // Envoi vers serveur (à implémenter)
+            // fetch('/api/pivar-violation-report', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(report)
+            // });
+        }
+
+        // PROTECTION CONTRE TOUTES LES MÉTHODES
+        
+        // 1. Protection clavier
         document.addEventListener('keydown', function(e) {
-            let shouldBlock = false;
-            let alertTitle = '';
-            let alertMessage = '';
+            const forbiddenKeys = [
+                'F12', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11',
+                'PrintScreen', 'Insert', 'Delete'
+            ];
             
-            // Print Screen - toutes variantes
-            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || 
-                e.keyCode === 44 || e.keyCode === 42 || e.keyCode === 124) {
-                shouldBlock = true;
-                alertTitle = 'Capture d\'écran détectée';
-                alertMessage = 'Print Screen désactivé pour protéger le contenu';
-            }
-            // F12 et outils développeur
-            else if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) {
-                shouldBlock = true;
-                alertTitle = 'Outils développeur';
-                alertMessage = 'Accès aux outils de développement restreint';
-            }
-            // Ctrl+U (voir source)
-            else if (e.ctrlKey && e.key === 'u') {
-                shouldBlock = true;
-                alertTitle = 'Code source';
-                alertMessage = 'Affichage du code source désactivé';
-            }
-            // Ctrl+S (sauvegarder)
-            else if (e.ctrlKey && e.key === 's') {
-                shouldBlock = true;
-                alertTitle = 'Sauvegarde détectée';
-                alertMessage = 'Sauvegarde de la page désactivée';
-            }
-            // Ctrl+P (imprimer)
-            else if (e.ctrlKey && e.key === 'p') {
-                shouldBlock = true;
-                alertTitle = 'Impression détectée';
-                alertMessage = 'Impression de la page désactivée';
-            }
-            
-            if (shouldBlock) {
+            if (forbiddenKeys.includes(e.key) || 
+                e.ctrlKey || e.altKey || e.metaKey || 
+                (e.shiftKey && e.key === 'F10')) {
+                
                 e.preventDefault();
                 e.stopPropagation();
-                showSmartNotification(alertTitle, alertMessage);
-                return false;
-            }
-        });
-
-        // PROTECTION SÉLECTION (interface uniquement)
-        document.addEventListener('selectstart', function(e) {
-            // Permettre la sélection dans l'iframe
-            if (e.target.closest('iframe')) {
-                return true;
-            }
-            
-            // Bloquer sur l'interface PIVAR
-            if (e.target.closest('.header-banner, .progress-bar, .security-notice, .footer')) {
-                e.preventDefault();
-                showSmartNotification('Sélection restreinte', 'Sélection désactivée sur l\'interface de navigation');
-                return false;
-            }
-        });
-
-        // DÉTECTION DEVTOOLS PASSIVE
-        let devToolsWarningShown = false;
-        function checkDevTools() {
-            const threshold = 200;
-            const heightDiff = window.outerHeight - window.innerHeight;
-            const widthDiff = window.outerWidth - window.innerWidth;
-            
-            if ((heightDiff > threshold || widthDiff > threshold) && !devToolsWarningShown) {
-                devToolsWarningShown = true;
-                showSmartNotification('Outils développeur détectés', 'Session surveillée - Utilisation normale recommandée', 6000);
+                e.stopImmediatePropagation();
                 
-                // Reset du warning après 30 secondes
-                setTimeout(() => {
-                    devToolsWarningShown = false;
-                }, 30000);
+                const violation = `${e.ctrlKey ? 'Ctrl+' : ''}${e.altKey ? 'Alt+' : ''}${e.metaKey ? 'Win+' : ''}${e.key || 'Touche système'}`;
+                handleViolation('CLAVIER INTERDIT', violation);
+                return false;
+            }
+        }, true);
+
+        // 2. Protection souris
+        ['contextmenu', 'selectstart', 'dragstart'].forEach(eventType => {
+            document.addEventListener(eventType, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                const typeNames = {
+                    'contextmenu': 'CLIC DROIT',
+                    'selectstart': 'SÉLECTION TEXTE', 
+                    'dragstart': 'GLISSER-DÉPOSER'
+                };
+                
+                handleViolation(typeNames[eventType] || eventType.toUpperCase(), 'Action souris interdite');
+                return false;
+            }, true);
+        });
+
+        // 3. Protection DevTools
+        let devToolsWarned = false;
+        function detectDevTools() {
+            const threshold = 120;
+            if ((window.outerHeight - window.innerHeight > threshold || 
+                 window.outerWidth - window.innerWidth > threshold) && !devToolsWarned) {
+                
+                devToolsWarned = true;
+                handleViolation('OUTILS DÉVELOPPEUR', 'F12 ou DevTools détectés');
+                
+                setTimeout(() => { devToolsWarned = false; }, 5000);
             }
         }
 
-        // PROTECTION MOBILE
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            console.log('📱 Mode mobile détecté');
-            
-            // Gestes de capture sur mobile
+        // 4. Protection mobile
+        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             document.addEventListener('touchstart', function(e) {
                 if (e.touches.length >= 3) {
-                    showSmartNotification('Geste mobile détecté', 'Capture d\'écran mobile suspectée');
+                    e.preventDefault();
+                    handleViolation('GESTE MOBILE', `${e.touches.length} doigts - capture suspectée`);
                 }
             });
         }
 
+        // SURVEILLANCE CONTINUE
+        setInterval(detectDevTools, 1000);
+
         // INITIALISATION
         window.addEventListener('load', function() {
-            console.log('✅ PIVAR Smart Security initialisé');
-            
-            // Vérification DevTools moins agressive
-            setInterval(checkDevTools, 3000);
-            
-            // Message de bienvenue
-            setTimeout(() => {
-                if (!sessionStorage.getItem('pivar-smart-welcome')) {
-                    showSmartNotification('Bienvenue sur PIVAR', 'Plateforme sécurisée - Évaluation en cours de protection', 5000);
-                    sessionStorage.setItem('pivar-smart-welcome', 'shown');
-                }
-            }, 2000);
+            updateDisplay();
+            console.log('🛡️ PIVAR Escalade Progressive - Session:', PIVAR_ESCALADE.sessionId);
+            console.log('⚠️ Maximum', PIVAR_ESCALADE.maxViolations, 'violations autorisées');
         });
 
-        // LOG DE FERMETURE
+        // CLEANUP
         window.addEventListener('beforeunload', function() {
-            console.log(`📊 Session PIVAR terminée - ${SMART_SECURITY.violations} violations détectées`);
+            if (PIVAR_ESCALADE.violationCount > 0) {
+                generateViolationReport();
+            }
         });
-
-        // Message développeur discret
-        console.log('%c🛡️ PIVAR Smart Security', 'color: #28a745; font-size: 14px; font-weight: bold;');
-        console.log('%cSystème de protection intelligent - Utilisation normale autorisée', 'color: #6c757d; font-size: 12px;');
     </script>
 </body>
 </html>
