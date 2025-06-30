@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIVAR - Mode de Réussite Sécurisé</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .header-banner h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb347 100%);
+            color: #333;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            box-shadow: 0 2px 4px rgba(255,215,0,0.3);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 100px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .security-notice {
+            background: linear-gradient(90deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            margin: 0;
+            font-size: 13px;
+            color: #856404;
+            text-align: center;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            font-weight: 500;
+        }
+
+        .questionnaire-frame {
+            width: 100%;
+            height: calc(100vh - 160px);
+            border: none;
+            display: block;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Styles mobiles */
+        @media (max-width: 768px) {
+            .header-banner h1 {
+                font-size: 16px;
+            }
+            .progress-bar {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .questionnaire-frame {
+                height: calc(100vh - 140px);
+            }
+        }
+
+        /* OVERLAY D'ALERTE MASSIVE */
+        .violation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(220, 53, 69, 0.98);
+            color: white;
+            display: none;
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .violation-content {
+            background: #dc3545;
+            padding: 40px;
+            border-radius: 15px;
+            border: 5px solid #fff;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            max-width: 600px;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .violation-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .violation-message {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            color: #ffeb3b;
+        }
+
+        /* Watermark permanent - MODE DE RÉUSSITE */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 2rem;
+            color: rgba(255, 215, 0, 0.12);
+            z-index: 1;
+            pointer-events: none;
+            font-weight: bold;
+            user-select: none;
+            text-shadow: 1px 1px 2px rgba(255,215,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Watermark de session - MODE DE RÉUSSITE -->
+    <div class="watermark" id="sessionWatermark">
+        SESSION PIVAR SURVEILLÉE - MODE DE RÉUSSITE ★
+    </div>
+
+    <!-- En-tête professionnel PIVAR -->
+    <div class="header-banner">
+        <h1>🧠 PIVAR - Évaluation Cognitive Professionnelle</h1>
+        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme sécurisée d'évaluation comportementale</p>
+    </div>
+
+    <!-- Barre de progression - FINALE -->
+    <div class="progress-bar">
+        🏆 QUESTIONNAIRE 7/7 : MODE DE RÉUSSITE • Session sécurisée • Durée estimée : 20 minutes • QUESTIONNAIRE FINAL
+    </div>
+
+    <!-- Conteneur principal -->
+    <div class="main-container">
+        <!-- Notice de sécurité - MODE DE RÉUSSITE -->
+        <div class="security-notice">
+            ⭐ QUESTIONNAIRE FINAL - MODE DE RÉUSSITE ⭐ Session hautement sécurisée • Protection maximale active
+        </div>
+
+        <!-- Questionnaire Tally intégré -->
+        <iframe 
+            class="questionnaire-frame" 
+            src="https://formulaires.pivar.info/r/nPPxY0"
+            title="Questionnaire PIVAR Sécurisé - Mode de Réussite"
+            allowtransparency="true"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+
+        <!-- Pied de page -->
+        <div class="footer">
+            PIVAR © 2025 • MODE DE RÉUSSITE • Évaluation cognitive sécurisée • Toute reproduction interdite
+        </div>
+    </div>
+
+    <!-- OVERLAY D'ALERTE -->
+    <div id="violationOverlay" class="violation-overlay">
+        <div class="violation-content">
+            <div class="violation-title">🚨 VIOLATION CRITIQUE</div>
+            <div class="violation-message" id="violationMessage">
+                TENTATIVE NON AUTORISÉE - MODE DE RÉUSSITE
+            </div>
+            <div class="countdown">
+                Continuez votre évaluation dans <span id="countdown">5</span>s
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sessionId = 'PIVAR_MODE_REUSSITE_' + Date.now();
+        console.log('🛡️ PIVAR Security - QUESTIONNAIRE FINAL - Mode de Réussite - Session:', sessionId);
+
+        function showOverlay(violationType) {
+            const overlay = document.getElementById('violationOverlay');
+            const messageElement = document.getElementById('violationMessage');
+            
+            messageElement.innerHTML = `
+                <strong>${violationType}</strong><br>
+                QUESTIONNAIRE FINAL - PROTECTION MAXIMALE<br>
+                VIOLATION ENREGISTRÉE ET TRACÉE
+            `;
+            
+            overlay.style.display = 'flex';
+            
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            
+            const timer = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    overlay.style.display = 'none';
+                }
+            }, 1000);
+            
+            console.log(`🚨 VIOLATION CRITIQUE MODE DE RÉUSSITE: ${violationType} - Session: ${sessionId}`);
+        }
+
+        // DÉTECTION MOBILE - SURVEILLANCE RENFORCÉE POUR LE QUESTIONNAIRE FINAL
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        let mobileActivity = { tabSwitches: 0, quickReturns: 0 };
+
+        if (isMobile) {
+            console.log('📱 Mode mobile détecté - Surveillance comportementale MAXIMALE pour questionnaire final');
+            
+            // Surveillance changements d'onglet - SEUIL RÉDUIT pour questionnaire final
+            let lastVisibilityChange = 0;
+            document.addEventListener('visibilitychange', function() {
+                const now = Date.now();
+                if (document.hidden) {
+                    mobileActivity.tabSwitches++;
+                    lastVisibilityChange = now;
+                    // Seuil réduit à 2 pour le questionnaire final
+                    if (mobileActivity.tabSwitches >= 2) {
+                        showOverlay('ACTIVITÉ MOBILE CRITIQUE - QUESTIONNAIRE FINAL');
+                    }
+                } else {
+                    const timeDiff = now - lastVisibilityChange;
+                    if (timeDiff < 4000 && mobileActivity.tabSwitches >= 1) {
+                        showOverlay('RETOUR SUSPECT - MODE DE RÉUSSITE PROTÉGÉ');
+                    }
+                }
+            });
+
+            // Gestes multi-touch - SEUIL RÉDUIT
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length >= 2) { // Réduit à 2 doigts pour le final
+                    showOverlay('GESTE MOBILE INTERDIT - MODE DE RÉUSSITE');
+                    e.preventDefault();
+                }
+            });
+
+            // Changement orientation - ALERTE IMMÉDIATE
+            window.addEventListener('orientationchange', function() {
+                showOverlay('ROTATION INTERDITE - QUESTIONNAIRE FINAL PROTÉGÉ');
+            });
+        }
+
+        // PROTECTION CLAVIER UNIVERSELLE - RENFORCÉE POUR LE QUESTIONNAIRE FINAL
+        document.addEventListener('keydown', function(e) {
+            const isInInput = e.target.matches('input, textarea, select');
+            if (isInInput) return;
+            
+            let violationType = null;
+            
+            // Print Screen - DÉTECTION MAXIMALE ASUS VIVABOOK
+            const isPrintScreen = 
+                e.key === 'PrintScreen' || e.code === 'PrintScreen' ||
+                e.keyCode === 44 || e.keyCode === 42 || e.keyCode === 124 || e.keyCode === 183 ||
+                (e.keyCode >= 40 && e.keyCode <= 50) ||
+                (!e.key && e.keyCode > 40 && e.keyCode < 200) ||
+                (e.key === 'Unidentified' && e.keyCode > 40) ||
+                (e.location === 0 && e.keyCode > 122 && e.keyCode < 130);
+
+            if (isPrintScreen) {
+                violationType = 'CAPTURE INTERDITE - MODE DE RÉUSSITE PROTÉGÉ';
+            } else if (e.ctrlKey) {
+                violationType = `CTRL+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT - QUESTIONNAIRE FINAL`;
+            } else if (e.altKey) {
+                violationType = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT - MODE RÉUSSITE`;
+            } else if (e.key?.startsWith('F') && e.key !== 'F5') {
+                violationType = `TOUCHE ${e.key} INTERDITE - PROTECTION MAXIMALE`;
+            } else if (e.metaKey) {
+                violationType = `WIN+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT - FINAL`;
+            }
+            
+            if (violationType) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                showOverlay(violationType);
+                return false;
+            }
+        }, true);
+
+        // Protection clic-droit - RENFORCÉE
+        document.addEventListener('contextmenu', function(e) {
+            const isInInput = e.target.matches('input, textarea');
+            if (!isInInput) {
+                e.preventDefault();
+                showOverlay('CLIC-DROIT INTERDIT - MODE DE RÉUSSITE');
+                return false;
+            }
+        });
+
+        // Protection sélection - RENFORCÉE
+        document.addEventListener('selectstart', function(e) {
+            const isInInput = e.target.matches('input, textarea');
+            if (!isInInput) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Initialisation - QUESTIONNAIRE FINAL
+        window.addEventListener('load', function() {
+            console.log('⭐ PIVAR MODE DE RÉUSSITE - QUESTIONNAIRE FINAL - Protections maximales actives');
+            
+            // Message spécial pour le questionnaire final
+            setTimeout(() => {
+                if (!sessionStorage.getItem('pivar-final-warning-shown')) {
+                    showOverlay('QUESTIONNAIRE FINAL<br>PROTECTION MAXIMALE ACTIVE<br>MODE DE RÉUSSITE SÉCURISÉ');
+                    sessionStorage.setItem('pivar-final-warning-shown', 'true');
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
