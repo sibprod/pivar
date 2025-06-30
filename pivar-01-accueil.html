@@ -2,45 +2,44 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIVAR - Collecte Ultra-Sécurisé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PIVAR - Collecte Mobile Sécurisé</title>
     <style>
-        /* PROTECTION CSS MAXIMALE */
+        /* PROTECTION CSS MOBILE MAXIMALE */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Blocage absolu sélection */
+            /* Blocage sélection absolu */
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
             -ms-user-select: none !important;
             user-select: none !important;
+            /* Mobile spécifique */
             -webkit-touch-callout: none !important;
-            -khtml-user-select: none !important;
-            /* Blocage drag & drop */
+            -webkit-tap-highlight-color: transparent !important;
+            /* Drag & drop */
             -webkit-user-drag: none !important;
             -moz-user-drag: none !important;
-            -o-user-drag: none !important;
-            user-drag: none !important;
         }
 
         /* Annulation sélection visuelle */
-        *::selection { background: transparent !important; color: inherit !important; }
-        *::-moz-selection { background: transparent !important; color: inherit !important; }
-        *::-webkit-selection { background: transparent !important; color: inherit !important; }
+        *::selection { background: transparent !important; }
+        *::-moz-selection { background: transparent !important; }
 
         /* AUTORISER sélection uniquement dans iframe */
-        iframe, iframe * {
+        iframe * {
             -webkit-user-select: auto !important;
             -moz-user-select: auto !important;
-            -ms-user-select: auto !important;
             user-select: auto !important;
         }
 
         html, body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            /* Empêcher zoom */
+            touch-action: pan-x pan-y;
             overflow-x: hidden;
         }
 
@@ -48,12 +47,12 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
-            padding: 15px;
+            padding: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .header-banner h1 {
-            font-size: 20px;
+            font-size: 16px;
             margin: 0;
         }
 
@@ -62,25 +61,22 @@
             color: white;
             text-align: center;
             padding: 8px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
         }
 
         .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
             background: white;
-            min-height: calc(100vh - 100px);
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: calc(100vh - 80px);
             position: relative;
         }
 
-        .security-notice {
+        .mobile-warning {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
-            padding: 15px;
+            padding: 12px;
             margin: 0;
-            font-size: 13px;
+            font-size: 12px;
             color: #856404;
             text-align: center;
             font-weight: 500;
@@ -88,300 +84,195 @@
 
         .questionnaire-frame {
             width: 100%;
-            height: calc(100vh - 160px);
+            height: calc(100vh - 120px);
             border: none;
             display: block;
         }
 
-        .footer {
-            background: #f8f9fa;
-            text-align: center;
-            padding: 10px;
-            font-size: 12px;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
-        }
-
-        /* INDICATEURS VISUELS */
-        .security-status {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(135deg, #dc3545, #c82333);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            z-index: 10000;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
-        }
-
-        .session-tracker {
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: rgba(108, 117, 125, 0.6);
-            text-align: center;
-            pointer-events: none;
-        }
-
-        /* POPUP VIOLATION */
-        .violation-alert {
+        /* ALERTE MOBILE SPÉCIFIQUE */
+        .mobile-alert {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #dc3545;
-            color: white;
-            padding: 30px;
+            background: white;
+            color: #333;
+            padding: 20px;
             border-radius: 15px;
-            border: 3px solid #fff;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border: 3px solid #dc3545;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
             z-index: 999999;
             display: none;
             text-align: center;
-            max-width: 500px;
-            animation: alertShake 0.5s infinite;
-        }
-
-        @keyframes alertShake {
-            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
-            25% { transform: translate(-50%, -50%) translateX(-10px); }
-            75% { transform: translate(-50%, -50%) translateX(10px); }
+            max-width: 90%;
+            font-size: 14px;
         }
 
         .alert-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 15px;
+            color: #dc3545;
         }
 
         .alert-message {
-            font-size: 1rem;
             margin-bottom: 20px;
             line-height: 1.4;
         }
 
         .alert-countdown {
-            font-size: 1.2rem;
+            font-size: 1rem;
+            color: #dc3545;
             font-weight: bold;
-            color: #ffeb3b;
         }
 
-        /* WATERMARKS ANTI-COPIE */
-        .watermark-protection {
+        /* WATERMARKS MOBILES */
+        .mobile-watermark {
             position: fixed;
-            top: 30%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 1.5rem;
-            color: rgba(220, 53, 69, 0.08);
-            z-index: 5;
+            font-size: 1rem;
+            color: rgba(220, 53, 69, 0.1);
+            z-index: 1;
             pointer-events: none;
-            font-weight: bold;
             white-space: nowrap;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header-banner h1 { font-size: 16px; }
-            .progress-bar { font-size: 12px; padding: 6px; }
-            .questionnaire-frame { height: calc(100vh - 140px); }
-            .violation-alert { margin: 20px; max-width: none; }
+        /* INDICATEUR SURVEILLANCE MOBILE */
+        .mobile-status {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            z-index: 1000;
         }
 
-        /* PROTECTION IMPRESSION */
-        @media print {
-            * { display: none !important; }
-            body::before {
-                content: "QUESTIONNAIRE PIVAR PROTÉGÉ - IMPRESSION INTERDITE";
-                display: block !important;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 2rem;
-                color: red;
-                text-align: center;
-            }
-        }
-
-        /* CURSEUR PROTECTION */
-        .protected-area {
-            cursor: not-allowed !important;
+        /* Empêcher screenshots par overlay (partiel) */
+        .screenshot-protection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 1;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <!-- Indicateurs sécurité -->
-    <div class="security-status" id="securityStatus">
-        🛡️ ULTRA-SÉCURISÉ • Violations: <span id="violationCount">0</span>/3
+    <!-- Protection overlay -->
+    <div class="screenshot-protection"></div>
+
+    <!-- Watermark mobile -->
+    <div class="mobile-watermark">PIVAR MOBILE SURVEILLÉ</div>
+
+    <!-- Status surveillance -->
+    <div class="mobile-status" id="mobileStatus">
+        📱 Surveillé
     </div>
 
-    <div class="session-tracker" id="sessionTracker">
-        Session: <span id="sessionDisplay"></span> • Candidat: <span id="candidatDisplay">En attente...</span>
-    </div>
-
-    <!-- Watermark -->
-    <div class="watermark-protection">SESSION PIVAR COLLECTE ULTRA-PROTÉGÉE</div>
-
-    <!-- En-tête -->
+    <!-- En-tête mobile adapté -->
     <div class="header-banner">
-        <h1>🧠 PIVAR – Protocole d'identification et de valorisation de l'action et de la réussite</h1>
-        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme ultra-sécurisée d'évaluation comportementale</p>
+        <h1>🧠 PIVAR – Évaluation Mobile Sécurisée</h1>
     </div>
 
-    <!-- Barre de progression -->
+    <!-- Barre de progression mobile -->
     <div class="progress-bar">
-        📊 QUESTIONNAIRE 2/7 : PILIER COLLECTE • Session ultra-sécurisée • Reproduction strictement interdite
+        📊 COLLECTE 2/7 • Mobile sécurisé
     </div>
 
     <!-- Conteneur principal -->
     <div class="main-container">
-        <!-- Notice sécurité -->
-        <div class="security-notice">
-            🚨 QUESTIONNAIRE SOUS SURVEILLANCE MAXIMALE • Toute tentative de copie/capture sera sanctionnée • 3 violations = exclusion automatique
+        <!-- Avertissement mobile -->
+        <div class="mobile-warning">
+            📱 MODE MOBILE • Questionnaire surveillé • Captures d'écran détectées = exclusion • Droits d'auteur protégés
         </div>
 
-        <!-- Questionnaire Tally -->
+        <!-- Questionnaire -->
         <iframe 
             class="questionnaire-frame" 
             src="https://formulaires.pivar.info/r/wMG4Lg"
-            title="Questionnaire PIVAR Collecte Ultra-Sécurisé"
+            title="Questionnaire PIVAR Mobile"
             allowtransparency="true"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
-            referrerpolicy="no-referrer-when-downgrade">
+            sandbox="allow-scripts allow-forms allow-same-origin">
         </iframe>
-
-        <!-- Pied de page -->
-        <div class="footer">
-            PIVAR © 2025 • Pilier Collecte • Protection maximale • Violations tracées et signalées
-        </div>
     </div>
 
-    <!-- POPUP VIOLATION -->
-    <div id="violationAlert" class="violation-alert">
-        <div class="alert-title" id="alertTitle">🚨 VIOLATION DÉTECTÉE</div>
-        <div class="alert-message" id="alertMessage">Action interdite</div>
-        <div class="alert-countdown">Retour dans <span id="alertCountdown">5</span>s</div>
+    <!-- ALERTE MOBILE -->
+    <div id="mobileAlert" class="mobile-alert">
+        <div class="alert-title" id="alertTitle">⚠️ Action Détectée</div>
+        <div class="alert-message" id="alertMessage">Message</div>
+        <div class="alert-countdown">Retour dans <span id="countdown">5</span>s</div>
     </div>
 
     <script>
-        // === VARIABLES GLOBALES ===
-        let VIOLATIONS = 0;
-        const MAX_VIOLATIONS = 3;
-        const SESSION_ID = 'COLLECTE_ULTRA_' + Date.now().toString(36).toUpperCase();
-        let USER_IP = 'Récupération...';
-        let CANDIDAT_CODE = '';
-        let ALERT_ACTIVE = false;
-        let LAST_VIOLATION = 0;
+        // VARIABLES MOBILES
+        let mobileViolations = 0;
+        const sessionId = 'MOBILE_' + Date.now().toString(36);
+        let alertActive = false;
+        let lastViolation = 0;
 
-        // Initialisation affichage
-        document.getElementById('sessionDisplay').textContent = SESSION_ID.substring(14, 20);
-        
-        // Récupération IP
-        fetch('https://api.ipify.org?format=json')
-            .then(r => r.json())
-            .then(data => { USER_IP = data.ip; })
-            .catch(() => { USER_IP = 'IP_MASQUÉE'; });
+        // Détection mobile
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/i.test(navigator.userAgent);
 
-        console.log('🛡️ PIVAR ULTRA-PROTECTION ACTIVE - Session:', SESSION_ID);
+        console.log('📱 PIVAR Mobile Protection - Device:', isMobile ? 'Mobile' : 'Desktop');
+        console.log('📱 OS détecté:', isIOS ? 'iOS' : isAndroid ? 'Android' : 'Autre');
 
-        // === FONCTION LOGGING CENTRAL ===
-        function logViolation(type, method, details) {
-            const violation = {
-                id: ++VIOLATIONS,
-                timestamp: new Date().toISOString(),
-                sessionId: SESSION_ID,
-                candidat: CANDIDAT_CODE || 'NON_IDENTIFIE',
-                type: type,
-                method: method,
-                details: details,
-                ip: USER_IP,
-                userAgent: navigator.userAgent.substring(0, 50)
-            };
-            
-            console.log(`🚨 VIOLATION #${VIOLATIONS}:`, violation);
-            
-            // TODO: Envoi serveur
-            // fetch('/api/pivar-violations', { method: 'POST', body: JSON.stringify(violation) });
-            
-            return violation;
-        }
-
-        // === GESTION ALERTES VIOLATION ===
-        function showViolationAlert(type, method, details) {
+        // FONCTION VIOLATION MOBILE
+        function handleMobileViolation(type, method, details) {
             const now = Date.now();
+            if (now - lastViolation < 2000 || alertActive) return; // Anti-spam 2 secondes
             
-            // Anti-spam (1 seconde minimum entre alertes)
-            if (now - LAST_VIOLATION < 1000 || ALERT_ACTIVE) return;
+            lastViolation = now;
+            mobileViolations++;
             
-            LAST_VIOLATION = now;
-            const violation = logViolation(type, method, details);
+            console.log(`📱 VIOLATION MOBILE #${mobileViolations}: ${type} - ${method}`);
             
-            document.getElementById('violationCount').textContent = VIOLATIONS;
-            
-            const alert = document.getElementById('violationAlert');
+            const alert = document.getElementById('mobileAlert');
             const title = document.getElementById('alertTitle');
             const message = document.getElementById('alertMessage');
             
-            if (VIOLATIONS >= MAX_VIOLATIONS) {
-                // EXCLUSION DÉFINITIVE
-                title.innerHTML = '🚫 EXCLUSION AUTOMATIQUE';
+            if (mobileViolations >= 2) {
+                // Exclusion rapide sur mobile (2 violations au lieu de 3)
+                title.textContent = '🚫 Parcours Suspendu';
                 message.innerHTML = `
-                    <strong>SESSION TERMINÉE</strong><br><br>
-                    ${VIOLATIONS} violations de sécurité détectées.<br>
-                    Type: ${type} (${method})<br><br>
-                    <strong>Candidat:</strong> ${CANDIDAT_CODE || 'Non identifié'}<br>
-                    <strong>Session:</strong> ${SESSION_ID}<br>
-                    <strong>IP:</strong> ${USER_IP}<br><br>
-                    Un rapport complet a été transmis à notre équipe.
+                    <strong>Violation mobile détectée : ${type}</strong><br><br>
+                    Sur mobile, les tentatives de capture sont plus facilement détectées.<br><br>
+                    Votre parcours est suspendu. Notre équipe reviendra vers vous.
                 `;
                 
                 setTimeout(() => {
-                    alert(`EXCLUSION DÉFINITIVE\n\nTrop de tentatives de violation (${VIOLATIONS}).\nUn rapport a été envoyé à l'équipe PIVAR.\n\nCandidat: ${CANDIDAT_CODE || 'Non identifié'}\nSession: ${SESSION_ID}\n\nVous serez contacté prochainement.`);
-                    window.location.href = 'about:blank';
+                    alert('Parcours PIVAR suspendu (violation mobile).\nNotre équipe reprendra contact.');
+                    window.location.href = 'https://sibprod.github.io/pivar/droits-auteur.html?mobile=violation';
                 }, 6000);
                 
-            } else if (VIOLATIONS === MAX_VIOLATIONS - 1) {
-                // DERNIER AVERTISSEMENT
-                title.innerHTML = '⚠️ DERNIER AVERTISSEMENT';
-                message.innerHTML = `
-                    <strong>VIOLATION ${VIOLATIONS}/${MAX_VIOLATIONS} - ${type}</strong><br>
-                    <strong>Méthode:</strong> ${method}<br><br>
-                    <strong>🚨 ATTENTION:</strong> La prochaine violation entraînera :<br>
-                    • Exclusion immédiate et définitive<br>
-                    • Capture d'écran de la violation<br>
-                    • Rapport transmis à l'équipe PIVAR<br>
-                    • Contact de notre équipe<br><br>
-                    <em>Votre session est entièrement tracée.</em>
-                `;
-                
             } else {
-                // AVERTISSEMENTS PROGRESSIFS
-                title.innerHTML = `🚨 VIOLATION ${VIOLATIONS}/${MAX_VIOLATIONS}`;
+                // Premier avertissement mobile
+                title.textContent = '📱 Avertissement Mobile';
                 message.innerHTML = `
-                    <strong>${type}</strong><br>
-                    <strong>Méthode:</strong> ${method}<br>
-                    <strong>Détails:</strong> ${details}<br><br>
-                    ${MAX_VIOLATIONS - VIOLATIONS} tentative(s) restante(s)<br>
-                    <em>Session: ${SESSION_ID}</em>
+                    <strong>Action détectée : ${type}</strong><br><br>
+                    Les questionnaires PIVAR sont protégés par droits d'auteur.<br><br>
+                    Sur mobile, toute tentative de capture entraîne une exclusion immédiate.
                 `;
             }
             
             alert.style.display = 'block';
-            ALERT_ACTIVE = true;
-            startAlertCountdown();
+            alertActive = true;
+            startMobileCountdown();
         }
 
-        // Countdown alerte
-        function startAlertCountdown() {
+        // Countdown mobile
+        function startMobileCountdown() {
             let seconds = 5;
-            const countdownEl = document.getElementById('alertCountdown');
+            const countdownEl = document.getElementById('countdown');
             
             const interval = setInterval(() => {
                 seconds--;
@@ -389,247 +280,131 @@
                 
                 if (seconds <= 0) {
                     clearInterval(interval);
-                    document.getElementById('violationAlert').style.display = 'none';
-                    ALERT_ACTIVE = false;
+                    document.getElementById('mobileAlert').style.display = 'none';
+                    alertActive = false;
                 }
             }, 1000);
         }
 
-        // === PROTECTIONS ANTI-COPIE MAXIMALES ===
+        // === PROTECTIONS MOBILES SPÉCIFIQUES ===
 
-        // 1. PROTECTION SÉLECTION TEXTE - TOUTES MÉTHODES
-        const selectionEvents = ['selectstart', 'dragstart', 'drop'];
-        selectionEvents.forEach(eventType => {
-            // Protection niveau document
-            document.addEventListener(eventType, function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                const eventNames = {
-                    'selectstart': 'SÉLECTION DE TEXTE',
-                    'dragstart': 'GLISSER-DÉPOSER', 
-                    'drop': 'DÉPOSER TEXTE'
-                };
-                
-                showViolationAlert('COPIE INTERDITE', eventNames[eventType], 'Tentative de sélection détectée');
-                return false;
-            }, true);
-            
-            // Protection niveau window
-            window.addEventListener(eventType, function(e) {
-                e.preventDefault();
-                return false;
-            }, true);
-        });
-
-        // 2. PROTECTION CLIC DROIT - ABSOLUE
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            showViolationAlert('MENU CONTEXTUEL', 'CLIC DROIT', 'Accès menu copie tenté');
-            return false;
-        }, true);
-
-        // Protection supplémentaire clic droit
-        document.oncontextmenu = function(e) {
-            e.preventDefault();
-            showViolationAlert('MENU CONTEXTUEL', 'CLIC DROIT (oncontextmenu)', 'Contournement détecté');
-            return false;
-        };
-
-        // 3. PROTECTION CLAVIER EXHAUSTIVE
-        document.addEventListener('keydown', function(e) {
-            const key = e.key?.toUpperCase() || 'UNKNOWN';
-            const code = e.code || e.keyCode;
-            let violation = null;
-            let method = '';
-            
-            // PRINT SCREEN - TOUTES VARIANTES
-            if (key === 'PRINTSCREEN' || code === 'PrintScreen' || 
-                e.keyCode === 44 || e.keyCode === 42 || e.keyCode === 124 || e.keyCode === 183 ||
-                code === 'F13' || code === 'F14' || code === 'F15') {
-                violation = 'CAPTURE ÉCRAN';
-                method = `Print Screen (${key}/${code}/${e.keyCode})`;
-            }
-            
-            // CTRL + TOUCHES (sauf navigation de base)
-            else if (e.ctrlKey) {
-                const allowedCtrl = ['F5', 'R']; // Refresh autorisé
-                if (!allowedCtrl.includes(key)) {
-                    violation = 'RACCOURCI COPIE';
-                    method = `Ctrl+${key}`;
-                    
-                    // Spécial pour raccourcis de copie
-                    if (['A', 'C', 'V', 'X', 'S', 'P'].includes(key)) {
-                        method += ' (COPIE/SÉLECTION)';
-                    } else if (['U', 'I', 'J'].includes(key)) {
-                        method += ' (OUTILS DÉVELOPPEUR)';
-                    }
-                }
-            }
-            
-            // ALT + TOUCHES
-            else if (e.altKey && !['TAB', 'F4'].includes(key)) {
-                violation = 'RACCOURCI SYSTÈME';
-                method = `Alt+${key}`;
-                
-                if (key === 'PRINTSCREEN') {
-                    method += ' (CAPTURE FENÊTRE)';
-                }
-            }
-            
-            // WINDOWS/CMD + TOUCHES
-            else if (e.metaKey) {
-                violation = 'RACCOURCI WINDOWS';
-                method = `Win+${key}`;
-                
-                if (['PRINTSCREEN', 'S'].includes(key)) {
-                    method += ' (OUTIL CAPTURE)';
-                }
-            }
-            
-            // SHIFT + TOUCHES (sélection)
-            else if (e.shiftKey) {
-                const shiftSelection = ['ARROWLEFT', 'ARROWRIGHT', 'ARROWUP', 'ARROWDOWN', 'HOME', 'END', 'PAGEUP', 'PAGEDOWN'];
-                if (shiftSelection.includes(key)) {
-                    violation = 'SÉLECTION CLAVIER';
-                    method = `Shift+${key}`;
-                } else if (key === 'F10') {
-                    violation = 'MENU CONTEXTUEL';
-                    method = 'Shift+F10 (Menu clavier)';
-                }
-            }
-            
-            // TOUCHES FONCTION
-            else if (key.startsWith('F') && !['F5'].includes(key)) {
-                violation = 'TOUCHE FONCTION';
-                method = `${key}`;
-                
-                if (key === 'F12') {
-                    method += ' (OUTILS DÉVELOPPEUR)';
-                }
-            }
-            
-            // Déclencher alerte si violation détectée
-            if (violation) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                showViolationAlert(violation, method, `Code: ${code}, KeyCode: ${e.keyCode}`);
-                return false;
-            }
-        }, true);
-
-        // 4. PROTECTION SOURIS AVANCÉE
-        document.addEventListener('mousedown', function(e) {
-            // Double-clic = sélection mot
-            if (e.detail >= 2) {
-                e.preventDefault();
-                showViolationAlert('SÉLECTION RAPIDE', 'DOUBLE/TRIPLE-CLIC', `${e.detail} clics détectés`);
-                return false;
-            }
-        }, true);
-
-        // Triple-clic spécifique
-        document.addEventListener('click', function(e) {
-            if (e.detail === 3) {
-                e.preventDefault();
-                showViolationAlert('SÉLECTION PARAGRAPHE', 'TRIPLE-CLIC', 'Sélection paragraphe tentée');
-                return false;
-            }
-        }, true);
-
-        // 5. DÉTECTION DEVTOOLS HYPERSENSIBLE
-        let devtoolsDetected = false;
-        function detectDevTools() {
-            const threshold = 100; // Plus sensible
-            const heightDiff = window.outerHeight - window.innerHeight;
-            const widthDiff = window.outerWidth - window.innerWidth;
-            
-            if ((heightDiff > threshold || widthDiff > threshold) && !devtoolsDetected) {
-                devtoolsDetected = true;
-                showViolationAlert('OUTILS DÉVELOPPEUR', 'F12/DEVTOOLS', `Dimensions: ${heightDiff}x${widthDiff}`);
-                
-                // Reset après 5 secondes
-                setTimeout(() => { devtoolsDetected = false; }, 5000);
-            }
-        }
-
-        // 6. PROTECTION MOBILE RENFORCÉE
-        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            // Gestes multi-touch
+        if (isMobile) {
+            // 1. GESTES MULTI-TOUCH (capture gestuelle)
             document.addEventListener('touchstart', function(e) {
                 if (e.touches.length >= 2) {
                     e.preventDefault();
-                    showViolationAlert('GESTE MOBILE', 'MULTI-TOUCH', `${e.touches.length} doigts détectés`);
+                    handleMobileViolation('GESTE MULTI-TOUCH', 'SCREENSHOT_GESTURE', `${e.touches.length} doigts`);
                 }
-            }, true);
+            }, { passive: false });
+
+            // 2. APPUI LONG (menu contextuel mobile)
+            let touchTimer;
+            let touchStartTime;
             
-            // Rotation écran
-            window.addEventListener('orientationchange', function() {
-                showViolationAlert('ROTATION MOBILE', 'CHANGEMENT ORIENTATION', 'Capture d\'écran suspectée');
+            document.addEventListener('touchstart', function(e) {
+                touchStartTime = Date.now();
+                touchTimer = setTimeout(() => {
+                    handleMobileViolation('APPUI LONG', 'CONTEXT_MENU', 'Menu contextuel mobile');
+                }, 800);
             });
             
-            // Long press (menu contextuel mobile)
-            let touchTimer;
-            document.addEventListener('touchstart', function(e) {
-                touchTimer = setTimeout(() => {
-                    showViolationAlert('MENU MOBILE', 'APPUI LONG', 'Long press détecté');
+            document.addEventListener('touchend', function(e) {
+                clearTimeout(touchTimer);
+                const touchDuration = Date.now() - touchStartTime;
+                if (touchDuration > 1000) {
+                    handleMobileViolation('APPUI LONG', 'LONG_PRESS', `${touchDuration}ms`);
+                }
+            });
+
+            // 3. CHANGEMENT ORIENTATION (capture suspectée)
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    handleMobileViolation('ROTATION ÉCRAN', 'ORIENTATION_CHANGE', 'Capture suspectée');
                 }, 500);
             });
-            
-            document.addEventListener('touchend', function() {
-                clearTimeout(touchTimer);
+
+            // 4. SURVEILLANCE VISIBILITÉ (app background)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    console.log('📱 App mise en arrière-plan - capture possible');
+                    // Ne pas alerter immédiatement (trop de faux positifs)
+                    setTimeout(() => {
+                        if (document.hidden) {
+                            handleMobileViolation('APP BACKGROUND', 'HIDDEN_CAPTURE', 'Capture en arrière-plan suspectée');
+                        }
+                    }, 3000);
+                }
+            });
+
+            // 5. DÉTECTION ZOOM (pinch to zoom)
+            let initialDistance = 0;
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    initialDistance = Math.sqrt(
+                        Math.pow(touch2.pageX - touch1.pageX, 2) +
+                        Math.pow(touch2.pageY - touch1.pageY, 2)
+                    );
+                }
+            });
+
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const currentDistance = Math.sqrt(
+                        Math.pow(touch2.pageX - touch1.pageX, 2) +
+                        Math.pow(touch2.pageY - touch1.pageY, 2)
+                    );
+                    
+                    if (Math.abs(currentDistance - initialDistance) > 50) {
+                        e.preventDefault();
+                        handleMobileViolation('ZOOM DÉTECTÉ', 'PINCH_ZOOM', 'Tentative zoom/capture');
+                    }
+                }
+            }, { passive: false });
+
+            // 6. PROTECTION SÉLECTION MOBILE
+            document.addEventListener('selectstart', function(e) {
+                if (!e.target.closest('iframe')) {
+                    e.preventDefault();
+                    handleMobileViolation('SÉLECTION MOBILE', 'TEXT_SELECT', 'Sélection de texte mobile');
+                    return false;
+                }
+            });
+
+        } else {
+            // Protection desktop classique si pas mobile
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                handleMobileViolation('CLIC DROIT', 'CONTEXT_MENU', 'Menu contextuel desktop');
+                return false;
             });
         }
 
-        // 7. SURVEILLANCE ACTIVITÉ FENÊTRE
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                console.log('🔍 Candidat a quitté l\'onglet');
-            } else {
-                console.log('🔍 Candidat est revenu');
+        // === PROTECTIONS COMMUNES MOBILE/DESKTOP ===
+
+        // Clavier (si clavier connecté sur mobile)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'PrintScreen' || e.keyCode === 44 || 
+                (e.ctrlKey && ['C', 'A', 'V', 'S'].includes(e.key?.toUpperCase()))) {
+                e.preventDefault();
+                handleMobileViolation('CLAVIER', `${e.ctrlKey ? 'CTRL+' : ''}${e.key}`, 'Raccourci clavier détecté');
+                return false;
             }
         });
 
-        // === INTERCEPTION CODE CANDIDAT ===
-        window.addEventListener('message', function(event) {
-            if (event.origin === 'https://formulaires.pivar.info' || event.origin === 'https://tally.so') {
-                try {
-                    const data = event.data;
-                    if (data && typeof data === 'string') {
-                        const codeMatch = data.match(/([A-Z]{4}-[A-Z0-9]{5})|([A-Z0-9]{4}-[A-Z0-9]{4})/);
-                        if (codeMatch) {
-                            CANDIDAT_CODE = codeMatch[0];
-                            document.getElementById('candidatDisplay').textContent = CANDIDAT_CODE;
-                            console.log('👤 Candidat identifié:', CANDIDAT_CODE);
-                        }
-                    }
-                } catch (e) {
-                    // Données non parsables
-                }
-            }
-        });
-
-        // === SURVEILLANCE CONTINUE ===
-        setInterval(detectDevTools, 1000);
-
-        // === INITIALISATION ===
+        // INITIALISATION MOBILE
         window.addEventListener('load', function() {
-            console.log('✅ PIVAR ULTRA-PROTECTION INITIALISÉE');
-            console.log('📊 Violations max autorisées:', MAX_VIOLATIONS);
+            console.log('📱 PIVAR Mobile Protection initialisée');
+            document.getElementById('mobileStatus').textContent = 
+                `📱 ${isMobile ? (isIOS ? 'iOS' : 'Android') : 'Desktop'} Surveillé`;
         });
 
-        window.addEventListener('beforeunload', function() {
-            console.log(`📊 Session terminée - ${VIOLATIONS} violations détectées`);
-        });
-
-        // === PROTECTION CONSOLE ===
-        console.log('%c🛡️ PIVAR ULTRA-SÉCURITÉ ACTIVE', 'color: red; font-size: 18px; font-weight: bold; background: yellow; padding: 5px;');
-        console.log('%cTOUTE TENTATIVE DE VIOLATION EST DÉTECTÉE ET TRACÉE', 'color: red; font-size: 14px; font-weight: bold;');
-        console.log('%cCandidat: respectez les consignes pour éviter l\'exclusion', 'color: orange; font-size: 12px;');
+        // Message développeur mobile
+        console.log('%c📱 PIVAR MOBILE SÉCURISÉ', 'color: blue; font-size: 16px; font-weight: bold;');
+        console.log('%cProtection partielle sur mobile - Captures natives non détectables', 'color: orange; font-size: 12px;');
     </script>
 </body>
 </html>
