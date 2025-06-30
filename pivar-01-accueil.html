@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIVAR - Mode de Réussite Sécurisé</title>
+    <title>PIVAR - Accueil Sécurisé</title>
     <style>
         * {
             margin: 0;
@@ -36,8 +36,8 @@
         }
 
         .progress-bar {
-            background: linear-gradient(90deg, #ffd700 0%, #ffb347 100%);
-            color: #333;
+            background: #28a745;
+            color: white;
             text-align: center;
             padding: 8px;
             font-size: 14px;
@@ -46,7 +46,6 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            box-shadow: 0 2px 4px rgba(255,215,0,0.3);
         }
 
         .main-container {
@@ -58,18 +57,17 @@
         }
 
         .security-notice {
-            background: linear-gradient(90deg, #fff3cd 0%, #ffeaa7 100%);
-            border-left: 4px solid #ffd700;
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
             padding: 15px;
             margin: 0;
             font-size: 13px;
-            color: #856404;
+            color: #155724;
             text-align: center;
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            font-weight: 500;
         }
 
         .questionnaire-frame {
@@ -155,51 +153,51 @@
             color: #ffeb3b;
         }
 
-        /* Watermark permanent - MODE DE RÉUSSITE */
+        /* Watermark permanent */
         .watermark {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
             font-size: 2rem;
-            color: rgba(255, 215, 0, 0.12);
+            color: rgba(220, 53, 69, 0.05);
             z-index: 1;
             pointer-events: none;
             font-weight: bold;
             user-select: none;
-            text-shadow: 1px 1px 2px rgba(255,215,0,0.3);
         }
     </style>
 </head>
 <body>
-    <!-- Watermark de session - MODE DE RÉUSSITE -->
+    <!-- Watermark de session -->
     <div class="watermark" id="sessionWatermark">
-        SESSION PIVAR SURVEILLÉE - MODE DE RÉUSSITE ★
+        SESSION PIVAR SURVEILLÉE - ACCUEIL
     </div>
 
     <!-- En-tête professionnel PIVAR -->
     <div class="header-banner">
-        <h1>🧠 PIVAR - Évaluation Cognitive Professionnelle</h1>
+        <h1>🧠 PIVAR – Protocole d’identification et de valorisation de l’action et de la réussite</h1>
         <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme sécurisée d'évaluation comportementale</p>
     </div>
 
-    <!-- Barre de progression - FINALE -->
+    <!-- Barre de progression -->
     <div class="progress-bar">
-        🏆 QUESTIONNAIRE 7/7 : MODE DE RÉUSSITE • Session sécurisée • Durée estimée : 20 minutes • QUESTIONNAIRE FINAL
+        📊 QUESTIONNAIRE 1/7 : ACCUEIL PIVAR • Session sécurisée •  Reproduction interdite - Protection CONTINEW + Droits d'auteur internationaux
+
     </div>
 
     <!-- Conteneur principal -->
     <div class="main-container">
-        <!-- Notice de sécurité - MODE DE RÉUSSITE -->
+        <!-- Notice de sécurité discrète -->
         <div class="security-notice">
-            ⭐ QUESTIONNAIRE FINAL - MODE DE RÉUSSITE ⭐ Session hautement sécurisée • Protection maximale active
+            ✅ Session sécurisée active • Vos données sont protégées • Évaluation confidentielle
         </div>
 
         <!-- Questionnaire Tally intégré -->
         <iframe 
             class="questionnaire-frame" 
-            src="https://formulaires.pivar.info/r/nPPxY0"
-            title="Questionnaire PIVAR Sécurisé - Mode de Réussite"
+            src="https://formulaires.pivar.info/r/mJog7Y"
+            title="Questionnaire PIVAR Sécurisé"
             allowtransparency="true"
             sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
             referrerpolicy="no-referrer-when-downgrade">
@@ -207,16 +205,16 @@
 
         <!-- Pied de page -->
         <div class="footer">
-            PIVAR © 2025 • MODE DE RÉUSSITE • Évaluation cognitive sécurisée • Toute reproduction interdite
+            PIVAR © 2025 • Toute reproduction interdite
         </div>
     </div>
 
     <!-- OVERLAY D'ALERTE -->
     <div id="violationOverlay" class="violation-overlay">
         <div class="violation-content">
-            <div class="violation-title">🚨 VIOLATION CRITIQUE</div>
+            <div class="violation-title">🚨 VIOLATION DÉTECTÉE</div>
             <div class="violation-message" id="violationMessage">
-                TENTATIVE NON AUTORISÉE - MODE DE RÉUSSITE
+                TENTATIVE NON AUTORISÉE
             </div>
             <div class="countdown">
                 Continuez votre évaluation dans <span id="countdown">5</span>s
@@ -225,8 +223,8 @@
     </div>
 
     <script>
-        const sessionId = 'PIVAR_MODE_REUSSITE_' + Date.now();
-        console.log('🛡️ PIVAR Security - QUESTIONNAIRE FINAL - Mode de Réussite - Session:', sessionId);
+        const sessionId = 'PIVAR_ACCUEIL_' + Date.now();
+        console.log('🛡️ PIVAR Security - Questionnaire Accueil - Session:', sessionId);
 
         function showOverlay(violationType) {
             const overlay = document.getElementById('violationOverlay');
@@ -234,8 +232,8 @@
             
             messageElement.innerHTML = `
                 <strong>${violationType}</strong><br>
-                QUESTIONNAIRE FINAL - PROTECTION MAXIMALE<br>
-                VIOLATION ENREGISTRÉE ET TRACÉE
+                VOUS VOUS EXPOSEZ À DES SANCTIONS<br>
+                SESSION ENREGISTRÉE ET TRACÉE
             `;
             
             overlay.style.display = 'flex';
@@ -253,50 +251,49 @@
                 }
             }, 1000);
             
-            console.log(`🚨 VIOLATION CRITIQUE MODE DE RÉUSSITE: ${violationType} - Session: ${sessionId}`);
+            console.log(`🚨 VIOLATION: ${violationType} - Session: ${sessionId}`);
         }
 
-        // DÉTECTION MOBILE - SURVEILLANCE RENFORCÉE POUR LE QUESTIONNAIRE FINAL
+        // DÉTECTION MOBILE
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         let mobileActivity = { tabSwitches: 0, quickReturns: 0 };
 
         if (isMobile) {
-            console.log('📱 Mode mobile détecté - Surveillance comportementale MAXIMALE pour questionnaire final');
+            console.log('📱 Mode mobile détecté - Surveillance comportementale active');
             
-            // Surveillance changements d'onglet - SEUIL RÉDUIT pour questionnaire final
+            // Surveillance changements d'onglet
             let lastVisibilityChange = 0;
             document.addEventListener('visibilitychange', function() {
                 const now = Date.now();
                 if (document.hidden) {
                     mobileActivity.tabSwitches++;
                     lastVisibilityChange = now;
-                    // Seuil réduit à 2 pour le questionnaire final
-                    if (mobileActivity.tabSwitches >= 2) {
-                        showOverlay('ACTIVITÉ MOBILE CRITIQUE - QUESTIONNAIRE FINAL');
+                    if (mobileActivity.tabSwitches >= 3) {
+                        showOverlay('ACTIVITÉ MOBILE SUSPECTE');
                     }
                 } else {
                     const timeDiff = now - lastVisibilityChange;
-                    if (timeDiff < 4000 && mobileActivity.tabSwitches >= 1) {
-                        showOverlay('RETOUR SUSPECT - MODE DE RÉUSSITE PROTÉGÉ');
+                    if (timeDiff < 3000 && mobileActivity.tabSwitches >= 2) {
+                        showOverlay('RETOUR RAPIDE SUSPECT - CAPTURE DÉTECTÉE');
                     }
                 }
             });
 
-            // Gestes multi-touch - SEUIL RÉDUIT
+            // Gestes multi-touch
             document.addEventListener('touchstart', function(e) {
-                if (e.touches.length >= 2) { // Réduit à 2 doigts pour le final
-                    showOverlay('GESTE MOBILE INTERDIT - MODE DE RÉUSSITE');
+                if (e.touches.length >= 3) {
+                    showOverlay('GESTE MOBILE INTERDIT');
                     e.preventDefault();
                 }
             });
 
-            // Changement orientation - ALERTE IMMÉDIATE
+            // Changement orientation
             window.addEventListener('orientationchange', function() {
-                showOverlay('ROTATION INTERDITE - QUESTIONNAIRE FINAL PROTÉGÉ');
+                showOverlay('ROTATION ÉCRAN - CAPTURE SUSPECTÉE');
             });
         }
 
-        // PROTECTION CLAVIER UNIVERSELLE - RENFORCÉE POUR LE QUESTIONNAIRE FINAL
+        // PROTECTION CLAVIER UNIVERSELLE
         document.addEventListener('keydown', function(e) {
             const isInInput = e.target.matches('input, textarea, select');
             if (isInInput) return;
@@ -313,15 +310,15 @@
                 (e.location === 0 && e.keyCode > 122 && e.keyCode < 130);
 
             if (isPrintScreen) {
-                violationType = 'CAPTURE INTERDITE - MODE DE RÉUSSITE PROTÉGÉ';
+                violationType = 'CAPTURE D\'ÉCRAN INTERDITE';
             } else if (e.ctrlKey) {
-                violationType = `CTRL+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT - QUESTIONNAIRE FINAL`;
+                violationType = `CTRL+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
             } else if (e.altKey) {
-                violationType = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT - MODE RÉUSSITE`;
+                violationType = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
             } else if (e.key?.startsWith('F') && e.key !== 'F5') {
-                violationType = `TOUCHE ${e.key} INTERDITE - PROTECTION MAXIMALE`;
+                violationType = `TOUCHE ${e.key} INTERDITE`;
             } else if (e.metaKey) {
-                violationType = `WIN+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT - FINAL`;
+                violationType = `WIN+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
             }
             
             if (violationType) {
@@ -333,17 +330,17 @@
             }
         }, true);
 
-        // Protection clic-droit - RENFORCÉE
+        // Protection clic-droit
         document.addEventListener('contextmenu', function(e) {
             const isInInput = e.target.matches('input, textarea');
             if (!isInInput) {
                 e.preventDefault();
-                showOverlay('CLIC-DROIT INTERDIT - MODE DE RÉUSSITE');
+                showOverlay('CLIC-DROIT INTERDIT');
                 return false;
             }
         });
 
-        // Protection sélection - RENFORCÉE
+        // Protection sélection
         document.addEventListener('selectstart', function(e) {
             const isInInput = e.target.matches('input, textarea');
             if (!isInInput) {
@@ -352,15 +349,15 @@
             }
         });
 
-        // Initialisation - QUESTIONNAIRE FINAL
+        // Initialisation
         window.addEventListener('load', function() {
-            console.log('⭐ PIVAR MODE DE RÉUSSITE - QUESTIONNAIRE FINAL - Protections maximales actives');
+            console.log('✅ PIVAR Accueil - Protections actives');
             
-            // Message spécial pour le questionnaire final
+            // Message d'accueil sécurisé après 3 secondes
             setTimeout(() => {
-                if (!sessionStorage.getItem('pivar-final-warning-shown')) {
-                    showOverlay('QUESTIONNAIRE FINAL<br>PROTECTION MAXIMALE ACTIVE<br>MODE DE RÉUSSITE SÉCURISÉ');
-                    sessionStorage.setItem('pivar-final-warning-shown', 'true');
+                if (!sessionStorage.getItem('pivar-welcome-shown')) {
+                    showOverlay('BIENVENUE SUR PIVAR<br>ÉVALUATION SÉCURISÉE ACTIVE');
+                    sessionStorage.setItem('pivar-welcome-shown', 'true');
                 }
             }, 3000);
         });
