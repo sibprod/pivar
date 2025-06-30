@@ -15,7 +15,20 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            margin: 0;
+            overflow-x: hidden;
+            /* Désactiver la sélection de base */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Permettre la sélection UNIQUEMENT dans l'iframe */
+        iframe {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
         }
 
         .header-banner {
@@ -24,10 +37,7 @@
             text-align: center;
             padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            position: relative;
         }
 
         .header-banner h1 {
@@ -42,10 +52,6 @@
             padding: 8px;
             font-size: 14px;
             font-weight: 500;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
         .main-container {
@@ -54,6 +60,7 @@
             background: white;
             min-height: calc(100vh - 100px);
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .security-notice {
@@ -64,10 +71,6 @@
             font-size: 13px;
             color: #155724;
             text-align: center;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
         .questionnaire-frame {
@@ -75,6 +78,7 @@
             height: calc(100vh - 160px);
             border: none;
             display: block;
+            pointer-events: auto;
         }
 
         .footer {
@@ -84,10 +88,83 @@
             font-size: 12px;
             color: #6c757d;
             border-top: 1px solid #dee2e6;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+        }
+
+        /* OVERLAY D'ALERTE - Version améliorée */
+        .security-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(220, 53, 69, 0.95);
+            color: white;
+            display: none;
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .security-content {
+            background: #dc3545;
+            padding: 40px;
+            border-radius: 15px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            max-width: 500px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .security-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ffeb3b;
+        }
+
+        .security-message {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .countdown {
+            font-size: 1.8rem;
+            color: #ffeb3b;
+            font-weight: bold;
+        }
+
+        /* Protection anti-screenshot avec overlay transparent */
+        .anti-screenshot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Watermark de protection */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 1.5rem;
+            color: rgba(220, 53, 69, 0.03);
+            z-index: 2;
+            pointer-events: none;
+            font-weight: bold;
+            white-space: nowrap;
         }
 
         /* Styles mobiles */
@@ -102,93 +179,58 @@
             .questionnaire-frame {
                 height: calc(100vh - 140px);
             }
+            .security-content {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            .security-title {
+                font-size: 2rem;
+            }
         }
 
-        /* OVERLAY D'ALERTE MASSIVE */
-        .violation-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(220, 53, 69, 0.98);
-            color: white;
-            display: none;
-            z-index: 999999;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-        }
-
-        .violation-content {
-            background: #dc3545;
-            padding: 40px;
-            border-radius: 15px;
-            border: 5px solid #fff;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            max-width: 600px;
-            animation: shake 0.5s infinite;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .violation-title {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .violation-message {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-        }
-
-        .countdown {
-            font-size: 2rem;
-            color: #ffeb3b;
-        }
-
-        /* Watermark permanent */
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 2rem;
-            color: rgba(220, 53, 69, 0.05);
-            z-index: 1;
-            pointer-events: none;
-            font-weight: bold;
-            user-select: none;
+        /* Protection DevTools */
+        @media screen and (min-width: 0px) {
+            .devtools-warning {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                color: #ff0000;
+                z-index: 999999;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                font-size: 3rem;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Watermark de session -->
-    <div class="watermark" id="sessionWatermark">
-        SESSION PIVAR SURVEILLÉE - ACCUEIL
+    <!-- Watermark de protection -->
+    <div class="watermark">
+        SESSION PIVAR PROTÉGÉE - REPRODUCTION INTERDITE
     </div>
+
+    <!-- Protection anti-screenshot -->
+    <div class="anti-screenshot"></div>
 
     <!-- En-tête professionnel PIVAR -->
     <div class="header-banner">
-        <h1>🧠 PIVAR – Protocole d’identification et de valorisation de l’action et de la réussite</h1>
+        <h1>🧠 PIVAR – Protocole d'identification et de valorisation de l'action et de la réussite</h1>
         <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme sécurisée d'évaluation comportementale</p>
     </div>
 
     <!-- Barre de progression -->
     <div class="progress-bar">
-        📊 QUESTIONNAIRE 1/7 : ACCUEIL PIVAR • Session sécurisée •  Reproduction interdite - Protection CONTINEW + Droits d'auteur internationaux
-
+        📊 QUESTIONNAIRE 1/7 : ACCUEIL PIVAR • Session sécurisée • Reproduction interdite - Protection CONTINEW
     </div>
 
     <!-- Conteneur principal -->
     <div class="main-container">
-        <!-- Notice de sécurité discrète -->
+        <!-- Notice de sécurité -->
         <div class="security-notice">
             ✅ Session sécurisée active • Vos données sont protégées • Évaluation confidentielle
         </div>
@@ -199,7 +241,7 @@
             src="https://formulaires.pivar.info/r/mJog7Y"
             title="Questionnaire PIVAR Sécurisé"
             allowtransparency="true"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
             referrerpolicy="no-referrer-when-downgrade">
         </iframe>
 
@@ -209,36 +251,54 @@
         </div>
     </div>
 
-    <!-- OVERLAY D'ALERTE -->
-    <div id="violationOverlay" class="violation-overlay">
-        <div class="violation-content">
-            <div class="violation-title">🚨 VIOLATION DÉTECTÉE</div>
-            <div class="violation-message" id="violationMessage">
-                TENTATIVE NON AUTORISÉE
+    <!-- OVERLAY D'ALERTE DE SÉCURITÉ -->
+    <div id="securityOverlay" class="security-overlay">
+        <div class="security-content">
+            <div class="security-title">🚨 ALERTE SÉCURITÉ</div>
+            <div class="security-message" id="securityMessage">
+                ACTION NON AUTORISÉE DÉTECTÉE
             </div>
             <div class="countdown">
-                Continuez votre évaluation dans <span id="countdown">5</span>s
+                Reprise dans <span id="countdown">3</span>s
             </div>
         </div>
     </div>
 
-    <script>
-        const sessionId = 'PIVAR_ACCUEIL_' + Date.now();
-        console.log('🛡️ PIVAR Security - Questionnaire Accueil - Session:', sessionId);
+    <!-- DevTools Warning -->
+    <div id="devtoolsWarning" class="devtools-warning">
+        🚨 OUTILS DÉVELOPPEUR DÉTECTÉS<br>
+        FERMER IMMÉDIATEMENT
+    </div>
 
-        function showOverlay(violationType) {
-            const overlay = document.getElementById('violationOverlay');
-            const messageElement = document.getElementById('violationMessage');
+    <script>
+        // Configuration de sécurité
+        const SECURITY_CONFIG = {
+            sessionId: 'PIVAR_' + Date.now(),
+            violations: 0,
+            maxViolations: 5,
+            logEnabled: true
+        };
+
+        console.log('🛡️ PIVAR Security Active - Session:', SECURITY_CONFIG.sessionId);
+
+        // Fonction d'affichage de l'alerte sécurisée
+        function showSecurityAlert(violationType, details = '') {
+            SECURITY_CONFIG.violations++;
+            
+            const overlay = document.getElementById('securityOverlay');
+            const messageElement = document.getElementById('securityMessage');
             
             messageElement.innerHTML = `
                 <strong>${violationType}</strong><br>
-                VOUS VOUS EXPOSEZ À DES SANCTIONS<br>
-                SESSION ENREGISTRÉE ET TRACÉE
+                ${details}<br>
+                VIOLATION ${SECURITY_CONFIG.violations}/${SECURITY_CONFIG.maxViolations}<br>
+                SESSION SURVEILLÉE ET ENREGISTRÉE
             `;
             
             overlay.style.display = 'flex';
             
-            let countdown = 5;
+            // Countdown
+            let countdown = 3;
             const countdownElement = document.getElementById('countdown');
             
             const timer = setInterval(() => {
@@ -248,119 +308,186 @@
                 if (countdown <= 0) {
                     clearInterval(timer);
                     overlay.style.display = 'none';
+                    
+                    // Si trop de violations, redirection
+                    if (SECURITY_CONFIG.violations >= SECURITY_CONFIG.maxViolations) {
+                        alert('Trop de violations détectées. Session terminée.');
+                        window.location.href = 'about:blank';
+                    }
                 }
             }, 1000);
             
-            console.log(`🚨 VIOLATION: ${violationType} - Session: ${sessionId}`);
+            // Log de sécurité
+            if (SECURITY_CONFIG.logEnabled) {
+                console.log(`🚨 VIOLATION: ${violationType} - ${details} - Session: ${SECURITY_CONFIG.sessionId}`);
+            }
         }
 
-        // DÉTECTION MOBILE
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        let mobileActivity = { tabSwitches: 0, quickReturns: 0 };
-
-        if (isMobile) {
-            console.log('📱 Mode mobile détecté - Surveillance comportementale active');
-            
-            // Surveillance changements d'onglet
-            let lastVisibilityChange = 0;
-            document.addEventListener('visibilitychange', function() {
-                const now = Date.now();
-                if (document.hidden) {
-                    mobileActivity.tabSwitches++;
-                    lastVisibilityChange = now;
-                    if (mobileActivity.tabSwitches >= 3) {
-                        showOverlay('ACTIVITÉ MOBILE SUSPECTE');
-                    }
-                } else {
-                    const timeDiff = now - lastVisibilityChange;
-                    if (timeDiff < 3000 && mobileActivity.tabSwitches >= 2) {
-                        showOverlay('RETOUR RAPIDE SUSPECT - CAPTURE DÉTECTÉE');
-                    }
-                }
-            });
-
-            // Gestes multi-touch
-            document.addEventListener('touchstart', function(e) {
-                if (e.touches.length >= 3) {
-                    showOverlay('GESTE MOBILE INTERDIT');
-                    e.preventDefault();
-                }
-            });
-
-            // Changement orientation
-            window.addEventListener('orientationchange', function() {
-                showOverlay('ROTATION ÉCRAN - CAPTURE SUSPECTÉE');
-            });
-        }
-
-        // PROTECTION CLAVIER UNIVERSELLE
+        // PROTECTION CLAVIER RENFORCÉE
         document.addEventListener('keydown', function(e) {
-            const isInInput = e.target.matches('input, textarea, select');
-            if (isInInput) return;
-            
-            let violationType = null;
-            
-            // Print Screen - DÉTECTION MAXIMALE ASUS VIVABOOK
-            const isPrintScreen = 
-                e.key === 'PrintScreen' || e.code === 'PrintScreen' ||
-                e.keyCode === 44 || e.keyCode === 42 || e.keyCode === 124 || e.keyCode === 183 ||
-                (e.keyCode >= 40 && e.keyCode <= 50) ||
-                (!e.key && e.keyCode > 40 && e.keyCode < 200) ||
-                (e.key === 'Unidentified' && e.keyCode > 40) ||
-                (e.location === 0 && e.keyCode > 122 && e.keyCode < 130);
-
-            if (isPrintScreen) {
-                violationType = 'CAPTURE D\'ÉCRAN INTERDITE';
-            } else if (e.ctrlKey) {
-                violationType = `CTRL+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
-            } else if (e.altKey) {
-                violationType = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
-            } else if (e.key?.startsWith('F') && e.key !== 'F5') {
-                violationType = `TOUCHE ${e.key} INTERDITE`;
-            } else if (e.metaKey) {
-                violationType = `WIN+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
+            // Permettre la saisie normale dans l'iframe
+            if (e.target.closest('iframe') || e.target.matches('input, textarea, select, [contenteditable]')) {
+                return true;
             }
             
-            if (violationType) {
+            let blocked = false;
+            let reason = '';
+            
+            // Print Screen - Detection multiconfiguration
+            if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || 
+                e.keyCode === 44 || e.keyCode === 42 || e.keyCode === 124 || 
+                (e.keyCode >= 40 && e.keyCode <= 50 && !e.key) ||
+                (e.key === 'Unidentified' && e.keyCode > 40)) {
+                blocked = true;
+                reason = 'CAPTURE D\'ÉCRAN INTERDITE';
+            }
+            // Combinaisons Ctrl
+            else if (e.ctrlKey && ['a', 'c', 'v', 'x', 's', 'p', 'u', 'i', 'j'].includes(e.key?.toLowerCase())) {
+                blocked = true;
+                reason = `CTRL+${e.key.toUpperCase()} INTERDIT`;
+            }
+            // Touches fonction (sauf F5 pour rafraîchir)
+            else if (e.key?.startsWith('F') && e.key !== 'F5') {
+                blocked = true;
+                reason = `TOUCHE ${e.key} INTERDITE`;
+            }
+            // Combinaisons Alt
+            else if (e.altKey && e.key !== 'Tab') {
+                blocked = true;
+                reason = `ALT+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
+            }
+            // Combinaisons Windows/Cmd
+            else if (e.metaKey) {
+                blocked = true;
+                reason = `WIN+${e.key?.toUpperCase() || 'TOUCHE'} INTERDIT`;
+            }
+            
+            if (blocked) {
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
-                showOverlay(violationType);
+                showSecurityAlert(reason, 'Action bloquée pour protéger le contenu');
                 return false;
             }
         }, true);
 
-        // Protection clic-droit
+        // PROTECTION CLIC DROIT AMÉLIORÉE
         document.addEventListener('contextmenu', function(e) {
-            const isInInput = e.target.matches('input, textarea');
-            if (!isInInput) {
-                e.preventDefault();
-                showOverlay('CLIC-DROIT INTERDIT');
-                return false;
+            // Permettre dans l'iframe
+            if (e.target.closest('iframe')) {
+                return true;
             }
-        });
-
-        // Protection sélection
-        document.addEventListener('selectstart', function(e) {
-            const isInInput = e.target.matches('input, textarea');
-            if (!isInInput) {
-                e.preventDefault();
-                return false;
-            }
-        });
-
-        // Initialisation
-        window.addEventListener('load', function() {
-            console.log('✅ PIVAR Accueil - Protections actives');
             
-            // Message d'accueil sécurisé après 3 secondes
-            setTimeout(() => {
-                if (!sessionStorage.getItem('pivar-welcome-shown')) {
-                    showOverlay('BIENVENUE SUR PIVAR<br>ÉVALUATION SÉCURISÉE ACTIVE');
-                    sessionStorage.setItem('pivar-welcome-shown', 'true');
-                }
-            }, 3000);
+            e.preventDefault();
+            showSecurityAlert('MENU CONTEXTUEL BLOQUÉ', 'Clic droit désactivé pour la sécurité');
+            return false;
+        }, true);
+
+        // PROTECTION SÉLECTION DE TEXTE
+        document.addEventListener('selectstart', function(e) {
+            // Permettre dans l'iframe et les champs de saisie
+            if (e.target.closest('iframe') || e.target.matches('input, textarea, [contenteditable]')) {
+                return true;
+            }
+            
+            e.preventDefault();
+            return false;
         });
+
+        // PROTECTION GLISSER-DÉPOSER
+        document.addEventListener('dragstart', function(e) {
+            if (!e.target.closest('iframe')) {
+                e.preventDefault();
+                showSecurityAlert('GLISSER-DÉPOSER INTERDIT', 'Action bloquée pour la sécurité');
+                return false;
+            }
+        });
+
+        // DÉTECTION DEVTOOLS AMÉLIORÉE
+        let devToolsOpen = false;
+        function detectDevTools() {
+            const threshold = 160;
+            const heightDiff = window.outerHeight - window.innerHeight;
+            const widthDiff = window.outerWidth - window.innerWidth;
+            
+            if (heightDiff > threshold || widthDiff > threshold) {
+                if (!devToolsOpen) {
+                    devToolsOpen = true;
+                    document.getElementById('devtoolsWarning').style.display = 'flex';
+                    showSecurityAlert('OUTILS DÉVELOPPEUR DÉTECTÉS', 'Veuillez fermer les outils développeur');
+                }
+            } else {
+                if (devToolsOpen) {
+                    devToolsOpen = false;
+                    document.getElementById('devtoolsWarning').style.display = 'none';
+                }
+            }
+        }
+
+        // PROTECTION MOBILE SPÉCIFIQUE
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            console.log('📱 Mode mobile - Protections mobiles activées');
+            
+            // Gestes multi-touch
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length >= 3) {
+                    e.preventDefault();
+                    showSecurityAlert('GESTE MULTI-TOUCH INTERDIT', 'Capture d\'écran suspecte');
+                }
+            });
+            
+            // Changement d'orientation
+            window.addEventListener('orientationchange', function() {
+                showSecurityAlert('ROTATION ÉCRAN DÉTECTÉE', 'Possible tentative de capture');
+            });
+            
+            // Surveillance visibilité
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    console.log('📱 Application mise en arrière-plan');
+                }
+            });
+        }
+
+        // SURVEILLANCE CONTINUE
+        setInterval(detectDevTools, 500);
+        
+        // PROTECTION FOCUS
+        window.addEventListener('blur', function() {
+            console.log('🔍 Fenêtre a perdu le focus');
+        });
+
+        // INITIALISATION SÉCURISÉE
+        window.addEventListener('load', function() {
+            console.log('✅ PIVAR Sécurisé - Toutes les protections sont actives');
+            
+            // Message de bienvenue après chargement
+            setTimeout(() => {
+                if (!sessionStorage.getItem('pivar-security-notice')) {
+                    showSecurityAlert('BIENVENUE SUR PIVAR', 'Évaluation sécurisée - Respectez les consignes');
+                    sessionStorage.setItem('pivar-security-notice', 'shown');
+                }
+            }, 2000);
+        });
+
+        // NETTOYAGE À LA FERMETURE
+        window.addEventListener('beforeunload', function(e) {
+            console.log('🔚 Session PIVAR terminée');
+        });
+
+        // PROTECTION CONSOLE
+        (function() {
+            const originalLog = console.log;
+            console.log = function() {
+                if (arguments[0] && arguments[0].includes && arguments[0].includes('PIVAR')) {
+                    originalLog.apply(console, arguments);
+                }
+            };
+        })();
+
+        // MESSAGE DE DISSUASION DÉVELOPPEUR
+        console.log('%c⚠️ ATTENTION DÉVELOPPEUR', 'color: red; font-size: 20px; font-weight: bold;');
+        console.log('%cToute tentative de modification de cette page est surveillée et peut constituer une violation des conditions d\'utilisation.', 'color: orange; font-size: 14px;');
     </script>
 </body>
 </html>
