@@ -70,21 +70,6 @@
             display: block;
         }
 
-        /* DEBUG PANEL */
-        .debug-panel {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.8);
-            color: #00ff00;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 11px;
-            max-width: 400px;
-            z-index: 1000;
-            font-family: 'Courier New', monospace;
-        }
-
         /* TRACKING INDICATOR */
         .tracking-indicator {
             position: fixed;
@@ -104,6 +89,21 @@
             0% { opacity: 1; }
             50% { opacity: 0.7; }
             100% { opacity: 1; }
+        }
+
+        /* DEBUG PANEL */
+        .debug-panel {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.9);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            max-width: 400px;
+            z-index: 1000;
+            font-family: 'Courier New', monospace;
         }
 
         /* POPUP VIOLATION */
@@ -186,40 +186,17 @@
             padding: 20px;
         }
 
-        /* TABLETTE WARNING */
-        .tablet-warning {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            color: #856404;
-            padding: 15px;
-            margin: 0;
-            text-align: center;
-            font-weight: 500;
-            font-size: 13px;
-            display: none;
-        }
-
         @media (max-width: 768px) {
             .device-blocker { display: flex; }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) and (pointer: coarse) {
-            .tablet-warning { display: block; }
         }
     </style>
 </head>
 <body>
-    <!-- BLOCAGE MOBILE CONFORME RAPPORT -->
+    <!-- BLOCAGE MOBILE -->
     <div class="device-blocker">
         <h1>📱 Accès Smartphone Non Autorisé</h1>
         <p><strong>Cette évaluation PIVAR nécessite un ordinateur ou tablette.</strong></p>
         <p>L'interface questionnaire ne s'affiche pas correctement sur smartphone.</p>
-        <p><strong>Veuillez utiliser un ordinateur ou une tablette (10 pouces minimum).</strong></p>
-        
-        <div style="margin-top: 30px; font-size: 0.9rem; opacity: 0.8;">
-            Device détecté: <span id="deviceType">Smartphone</span><br>
-            Session: <span id="sessionMobile">Loading...</span>
-        </div>
     </div>
 
     <!-- TRACKING INDICATOR -->
@@ -229,18 +206,12 @@
 
     <!-- DEBUG PANEL -->
     <div class="debug-panel" id="debugPanel">
-        <div><strong>🔍 AUDIT SYSTÈME PIVAR:</strong></div>
-        <div id="debugLogs">Initialisation audit...</div>
+        <div><strong>🔍 DÉTECTIONS ACTIVES:</strong></div>
+        <div id="debugLogs">Aucune détection encore...</div>
     </div>
 
     <!-- Interface principale -->
     <div class="main-container">
-        <!-- WARNING TABLETTE CONFORME RAPPORT -->
-        <div class="tablet-warning" id="tabletWarning">
-            ⚠️ <strong>TABLETTE DÉTECTÉE</strong> - Assurez-vous que le questionnaire s'affiche correctement. 
-            En cas de problème d'affichage, utilisez un ordinateur.
-        </div>
-
         <div class="header-banner">
             <h1>🧠 PIVAR – Protocole d'identification et de valorisation de l'action et de la réussite</h1>
             <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Plateforme sécurisée d'évaluation comportementale</p>
@@ -267,86 +238,49 @@
         </iframe>
     </div>
 
-    <!-- POPUP VIOLATION CONFORME RAPPORT -->
+    <!-- POPUP VIOLATION -->
     <div id="violationPopup" class="violation-popup">
         <div class="popup-title" id="popupTitle">⚠️ VIOLATION DÉTECTÉE</div>
-        <div class="popup-message" id="popupMessage">Message conforme rapport</div>
+        <div class="popup-message" id="popupMessage">Message</div>
         <div class="popup-countdown">Retour à votre questionnaire dans <span id="countdown">10</span> secondes</div>
     </div>
 
     <script>
-        // ============== VARIABLES CONFORMES TES CORRECTIONS ==============
+        // ============== VARIABLES GLOBALES ==============
         const sessionData = {
             id: 'PIVAR_' + Date.now().toString(36).toUpperCase(),
             questionnaire: 'REUSSITE',
             code_tally: 'nPPxY0',
             violations: [],
             totalViolations: 0,
-            devViolations: 0,
             deviceInfo: {
                 userAgent: navigator.userAgent,
-                isMobile: /iPhone|Android.*Mobile|Windows Phone|BlackBerry/i.test(navigator.userAgent),
-                isTablet: /iPad|Android(?!.*Mobile)|Tablet|PlayBook|Silk/i.test(navigator.userAgent) ||
-                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1),
-                screenWidth: window.screen.width,
-                screenHeight: window.screen.height,
-                touchPoints: navigator.maxTouchPoints || 0,
-                platform: navigator.platform
+                screenRes: `${screen.width}x${screen.height}`,
+                platform: navigator.platform,
+                touchPoints: navigator.maxTouchPoints || 0
             }
         };
 
         let alertActive = false;
         let debugLogs = [];
 
-        // Variables pour première détection
-        let firstDevToolsDetection = true;
-        let firstPrintScreenDetection = true;
-        let firstRightClickDetection = true;
-
-        // Afficher session ID
+        // Afficher session
         document.getElementById('trackingIndicator').textContent = `🏆 ${sessionData.id}`;
-        if (document.getElementById('sessionMobile')) {
-            document.getElementById('sessionMobile').textContent = sessionData.id;
-        }
 
         // ============== FONCTION DEBUG ==============
-        function addDebugLog(message, status = 'info') {
+        function addDebugLog(message) {
             const timestamp = new Date().toLocaleTimeString();
             const logEntry = `${timestamp}: ${message}`;
             debugLogs.push(logEntry);
             
+            // Afficher les 5 derniers logs
             const debugPanel = document.getElementById('debugLogs');
-            debugPanel.innerHTML = debugLogs.slice(-4).join('<br>');
+            debugPanel.innerHTML = debugLogs.slice(-5).join('<br>');
             
-            console.log(`🔍 AUDIT: ${logEntry}`);
+            console.log('🔍 DEBUG:', message);
         }
 
-        // ============== POLITIQUE DEVICE CONFORME RAPPORT ==============
-        function handleDevicePolicy() {
-            addDebugLog('Vérification politique device...');
-            
-            // BLOQUER MOBILE (conforme rapport)
-            if (sessionData.deviceInfo.isMobile) {
-                document.getElementById('deviceType').textContent = 'Smartphone';
-                addDebugLog('BLOQUÉ: Smartphone détecté', 'error');
-                return false;
-            }
-            
-            // AVERTIR TABLETTE (conforme rapport)
-            if (sessionData.deviceInfo.isTablet) {
-                document.getElementById('tabletWarning').style.display = 'block';
-                document.getElementById('trackingIndicator').textContent = `⚠️ TABLETTE ${sessionData.id}`;
-                document.getElementById('trackingIndicator').style.background = '#fd7e14';
-                addDebugLog('TABLETTE: Accès autorisé avec avertissement', 'warning');
-                return true;
-            }
-            
-            // DESKTOP OK (conforme rapport)
-            addDebugLog('DESKTOP: Accès optimal autorisé', 'success');
-            return true;
-        }
-
-        // ============== SYSTÈME ZAPIER CONFORME RAPPORT ==============
+        // ============== ENVOI ZAPIER IMMÉDIAT ==============
         function sendToZapierImmediate(violationData) {
             const zapierWebhook = 'https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/';
             
@@ -355,22 +289,15 @@
                 questionnaire: sessionData.questionnaire,
                 code_tally: sessionData.code_tally,
                 timestamp: new Date().toISOString(),
-                violation_count: sessionData.totalViolations + sessionData.devViolations + 1,
-                max_violations: 5, // TES CORRECTIONS
+                violation_count: sessionData.totalViolations + 1,
+                max_violations: 5,
                 violation_details: violationData,
                 priority: 'IMMEDIATE',
                 device_info: sessionData.deviceInfo,
-                status: (sessionData.totalViolations + sessionData.devViolations >= 4) ? 'EXCLU' : 'SURVEILLANCE',
-                candidate_info: {
-                    // À RÉCUPÉRER SELON TA MÉTHODE CHOISIE
-                    prenom: "[À DÉFINIR]",
-                    nom: "[À DÉFINIR]", 
-                    code_acces: "[À DÉFINIR]",
-                    email: "[À DÉFINIR]"
-                }
+                status: (sessionData.totalViolations >= 4) ? 'EXCLU' : 'SURVEILLANCE'
             };
 
-            // ENVOI GARANTI (conforme rapport)
+            // ENVOI GARANTI
             navigator.sendBeacon(zapierWebhook, JSON.stringify(payload));
             
             fetch(zapierWebhook, {
@@ -379,93 +306,107 @@
                 body: JSON.stringify(payload),
                 keepalive: true
             }).catch(() => {
-                addDebugLog('Zapier: Beacon envoyé (fetch failed)', 'info');
+                addDebugLog('📡 Beacon envoyé (fetch failed)');
             });
 
-            console.log('📡 ZAPIER PAYLOAD:', payload);
-            addDebugLog(`📡 Zapier envoyé: ${violationData.type}`, 'success');
+            console.log('📡 ZAPIER ENVOYÉ:', payload);
+            addDebugLog(`📡 Zapier: ${violationData.type} - ${violationData.method}`);
         }
 
-        // ============== ESCALADE 5 VIOLATIONS AVEC TES CORRECTIONS ==============
-        function showViolationPopup(type, method, isDevViolation = false) {
+        // ============== DÉTECTION DE VIOLATION ==============
+        function detectViolation(type, method, details) {
+            addDebugLog(`🚨 VIOLATION: ${type} - ${method}`);
+            
+            const violationData = {
+                type: type,
+                method: method,
+                details: details,
+                timestamp: new Date().toISOString()
+            };
+            
+            // ENVOI IMMÉDIAT
+            sendToZapierImmediate(violationData);
+            
+            // Incrémenter violations
+            sessionData.violations.push(violationData);
+            sessionData.totalViolations++;
+            
+            // Afficher popup si pas déjà actif
+            if (!alertActive) {
+                showViolationPopup(type, method, sessionData.totalViolations);
+            }
+            
+            // Redirection à 5 violations
+            if (sessionData.totalViolations >= 5) {
+                setTimeout(() => {
+                    window.location.href = 'https://www.pivar.info/cgu-rgpd-droitsauteurs';
+                }, 30000);
+            }
+        }
+
+        // ============== POPUP VIOLATION ==============
+        function showViolationPopup(type, method, violationCount) {
             const popup = document.getElementById('violationPopup');
             const title = document.getElementById('popupTitle');
             const message = document.getElementById('popupMessage');
             
-            // SYSTÈME 5 VIOLATIONS avec tes temporisations
-            const count = sessionData.totalViolations + sessionData.devViolations;
-            const countdowns = [10, 15, 20, 25, 30]; // TES CORRECTIONS
-            const currentCountdown = countdowns[count - 1] || 30;
-            
             // COULEURS D'ESCALADE
             const violationClasses = ['violation-1', 'violation-2', 'violation-3', 'violation-4', 'violation-5'];
-            popup.className = `violation-popup ${violationClasses[count - 1] || 'violation-5'}`;
+            popup.className = `violation-popup ${violationClasses[violationCount - 1] || 'violation-5'}`;
             
-            if (isDevViolation) {
-                // RÈGLES SPÉCIALES OUTILS DEV - À PRÉCISER
-                if (sessionData.devViolations === 1) {
-                    title.textContent = '⚠️ Information Importante';
-                    message.innerHTML = `
-                        Répondre à ce questionnaire ne nécessite aucune fonctionnalité de type <strong>${method}</strong>.<br><br>
-                        Nous vous recommandons de suivre votre parcours en répondant à vos questions.
-                    `;
-                } else {
-                    title.textContent = '🚫 Parcours Suspendu';
-                    message.innerHTML = `
-                        <strong>Tentative de violation suspectée.</strong><br><br>
-                        Votre parcours est suspendu, et nous allons aviser notre service juridique.<br><br>
-                        Un membre de notre équipe reviendra vers vous.
-                    `;
-                }
+            // TEMPORISATION PROGRESSIVE : 10, 15, 20, 25, 30 secondes
+            const countdowns = [10, 15, 20, 25, 30];
+            const currentCountdown = countdowns[violationCount - 1] || 30;
+            
+            // MESSAGES SELON VIOLATION
+            const actionText = type.includes('COPY') ? 'copier' : 
+                              type.includes('CAPTURE') ? 'capturer l\'écran' : 
+                              type.includes('DEV') ? 'utiliser des outils de développeur' : 'accéder au contenu';
+            
+            if (violationCount === 1) {
+                title.textContent = '⚠️ PREMIÈRE VIOLATION DÉTECTÉE';
+                message.innerHTML = `
+                    <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
+                    Cette action a été <strong>enregistrée et tracée</strong> dans nos systèmes.<br><br>
+                    Les questionnaires PIVAR sont protégés par droits d'auteur.<br><br>
+                    <strong>🚨 AVERTISSEMENT :</strong> ${5 - violationCount} tentatives restantes avant exclusion automatique.
+                `;
+            } else if (violationCount === 2) {
+                title.textContent = '🟡 DEUXIÈME VIOLATION - ATTENTION';
+                message.innerHTML = `
+                    <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
+                    Cette violation a été <strong>enregistrée</strong> dans nos systèmes.<br><br>
+                    <strong>⚠️ ATTENTION :</strong> ${5 - violationCount} tentatives restantes avant exclusion.
+                `;
+            } else if (violationCount === 3) {
+                title.textContent = '🟠 TROISIÈME VIOLATION - SÉRIEUX';
+                message.innerHTML = `
+                    <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
+                    Cette violation a été <strong>signalée</strong> à notre équipe de sécurité.<br><br>
+                    <strong>🔶 SÉRIEUX :</strong> ${5 - violationCount} tentatives restantes avant exclusion.
+                `;
+            } else if (violationCount === 4) {
+                title.textContent = '🔴 QUATRIÈME VIOLATION - CRITIQUE';
+                message.innerHTML = `
+                    <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
+                    Cette violation a été <strong>immédiatement signalée</strong> à notre équipe.<br><br>
+                    <strong>🔴 CRITIQUE :</strong> UNE SEULE tentative restante avant exclusion définitive.
+                `;
             } else {
-                // VIOLATIONS GÉNÉRALES - ESCALADE 5 NIVEAUX
-                const actionText = type.includes('COPY') ? 'copier' : type.includes('CAPTURE') ? 'capturer l\'écran' : 'accéder au contenu';
-                
-                if (count === 1) {
-                    title.textContent = '⚠️ PREMIÈRE VIOLATION DÉTECTÉE';
-                    message.innerHTML = `
-                        <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
-                        Cette action a été <strong>enregistrée et tracée</strong> dans nos systèmes.<br><br>
-                        Les questionnaires PIVAR sont protégés par droits d'auteur.<br><br>
-                        <strong>🚨 AVERTISSEMENT :</strong> ${5 - count} tentatives restantes avant exclusion automatique.
-                    `;
-                } else if (count === 2) {
-                    title.textContent = '🟡 DEUXIÈME VIOLATION - ATTENTION';
-                    message.innerHTML = `
-                        <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
-                        Cette violation a été <strong>enregistrée</strong> dans nos systèmes.<br><br>
-                        <strong>⚠️ ATTENTION :</strong> ${5 - count} tentatives restantes avant exclusion.
-                    `;
-                } else if (count === 3) {
-                    title.textContent = '🟠 TROISIÈME VIOLATION - SÉRIEUX';
-                    message.innerHTML = `
-                        <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
-                        Cette violation a été <strong>signalée</strong> à notre équipe de sécurité.<br><br>
-                        <strong>🔶 SÉRIEUX :</strong> ${5 - count} tentatives restantes avant exclusion.
-                    `;
-                } else if (count === 4) {
-                    title.textContent = '🔴 QUATRIÈME VIOLATION - CRITIQUE';
-                    message.innerHTML = `
-                        <strong>Action détectée :</strong> Tentative de ${actionText} (${method})<br><br>
-                        Cette violation a été <strong>immédiatement signalée</strong> à notre équipe.<br><br>
-                        <strong>🔴 CRITIQUE :</strong> UNE SEULE tentative restante avant exclusion définitive.
-                    `;
-                } else {
-                    title.textContent = '🚫 EXCLUSION AUTOMATIQUE';
-                    message.innerHTML = `
-                        <strong>5 violations détectées</strong><br><br>
-                        Votre session ${sessionData.id} a été <strong>automatiquement suspendue</strong>.<br><br>
-                        Un rapport complet a été transmis à notre équipe juridique.<br><br>
-                        <strong>📋 RAPPORT GÉNÉRÉ :</strong> Toutes vos actions ont été enregistrées et seront analysées par notre équipe.
-                    `;
-                }
+                title.textContent = '🚫 EXCLUSION AUTOMATIQUE';
+                message.innerHTML = `
+                    <strong>5 violations détectées</strong><br><br>
+                    Votre session ${sessionData.id} a été <strong>automatiquement suspendue</strong>.<br><br>
+                    Un rapport complet a été transmis à notre équipe juridique.<br><br>
+                    <strong>📋 RAPPORT GÉNÉRÉ :</strong> Toutes vos actions ont été enregistrées.
+                `;
             }
             
             popup.style.display = 'block';
             alertActive = true;
-            addDebugLog(`Popup violation ${isDevViolation ? 'DEV' : 'GEN'} affiché`, 'warning');
+            addDebugLog(`📱 Popup violation ${violationCount} affiché`);
             
-            // COUNTDOWN AVEC TES TEMPORISATIONS
+            // COUNTDOWN
             let seconds = currentCountdown;
             const countdownEl = document.getElementById('countdown');
             countdownEl.textContent = seconds;
@@ -477,196 +418,147 @@
                     clearInterval(interval);
                     popup.style.display = 'none';
                     alertActive = false;
-                    addDebugLog('Popup fermé', 'info');
-                    
-                    // REDIRECTION À LA 5ÈME VIOLATION
-                    if (count >= 5) {
-                        addDebugLog('🚫 REDIRECTION: 5 violations atteintes');
-                        window.location.href = 'https://www.pivar.info/cgu-rgpd-droitsauteurs';
-                    }
+                    addDebugLog('✅ Popup fermé');
                 }
             }, 1000);
         }
 
-        // ============== DÉTECTION VIOLATIONS CONFORME RAPPORT ==============
-        function detectViolation(type, method, details, isFirstTime = false) {
-            addDebugLog(`🚨 VIOLATION: ${type} - ${method}`, 'error');
-            
-            const violationData = {
-                type: type,
-                method: method,
-                details: details,
-                timestamp: new Date().toISOString(),
-                first_time: isFirstTime
-            };
-            
-            // ENVOI IMMÉDIAT ZAPIER (conforme rapport)
-            sendToZapierImmediate(violationData);
-            
-            const isDevViolation = ['DEV', 'OUTILS_DEVELOPPEUR'].some(keyword => 
-                type.includes(keyword) || method.includes(keyword));
-            
-            if (isDevViolation) {
-                sessionData.devViolations++;
-                addDebugLog(`DevViolations: ${sessionData.devViolations}`, 'warning');
-                
-                // RÈGLE DEVTOOLS - À PRÉCISER (2 violations ou suit règle générale?)
-                if (sessionData.devViolations >= 2) {
-                    setTimeout(() => {
-                        alert(`Session ${sessionData.id} suspendue.\nNotre équipe reprendra contact avec vous.`);
-                        window.location.href = 'https://www.pivar.info/cgu-rgpd-droitsauteurs';
-                    }, 30000);
-                }
-            } else {
-                sessionData.violations.push(violationData);
-                sessionData.totalViolations++;
-                addDebugLog(`TotalViolations: ${sessionData.totalViolations}`, 'warning');
-                
-                // EXCLUSION À 5 VIOLATIONS (TES CORRECTIONS)
-                if (sessionData.totalViolations >= 5) {
-                    setTimeout(() => {
-                        alert(`Session ${sessionData.id} suspendue après 5 infractions.\nNotre équipe reprendra contact avec vous.`);
-                        window.location.href = 'https://www.pivar.info/cgu-rgpd-droitsauteurs';
-                    }, 30000);
-                }
-            }
-            
-            if (!alertActive) {
-                showViolationPopup(type, method, isDevViolation);
-            }
-        }
+        // ============== DÉTECTIONS FIABLES ==============
+        addDebugLog('🔧 Initialisation détections...');
 
-        // ============== DÉTECTIONS TECHNIQUES CONFORMES RAPPORT ==============
-
-        // 1. CLIC DROIT - PROTECTION INTELLIGENTE
+        // 1. CLIC DROIT - DÉTECTION GLOBALE
         document.addEventListener('contextmenu', function(e) {
-            addDebugLog('Event: contextmenu détecté', 'info');
+            addDebugLog('👆 Clic droit détecté');
             
-            // AUTORISER dans iframe Tally (zones de saisie)
-            if (e.target.closest('iframe')) {
-                addDebugLog('Clic droit autorisé: dans iframe', 'info');
-                return; // Pas de violation
+            // AUTORISER uniquement sur les éléments de saisie
+            if (e.target.matches('input[type="text"], input[type="email"], textarea, select')) {
+                addDebugLog('✅ Clic droit autorisé: champ de saisie');
+                return true; // Autoriser
             }
             
-            const isFirst = firstRightClickDetection;
-            if (firstRightClickDetection) {
-                firstRightClickDetection = false;
-            }
-            
-            detectViolation('COPY', 'CLIC_DROIT', `Target: ${e.target.tagName}`, isFirst);
-            // Ne pas bloquer pour permettre test
+            // BLOQUER partout ailleurs
+            detectViolation('COPY', 'CLIC_DROIT', `Target: ${e.target.tagName}`);
+            e.preventDefault();
+            return false;
         }, true);
 
-        // 2. SÉLECTION - PROTECTION INTELLIGENTE
+        // 2. SÉLECTION - DÉTECTION GLOBALE  
         document.addEventListener('selectstart', function(e) {
-            if (!e.target.closest('iframe') && !e.target.matches('input, textarea')) {
-                addDebugLog('Event: selectstart détecté hors zone autorisée', 'info');
-                detectViolation('COPY', 'SELECTION_TEXTE', `Target: ${e.target.tagName}`);
+            addDebugLog('✏️ Sélection détectée');
+            
+            // AUTORISER uniquement dans les champs de saisie
+            if (e.target.matches('input, textarea')) {
+                addDebugLog('✅ Sélection autorisée: champ de saisie');
+                return true;
             }
+            
+            // BLOQUER partout ailleurs
+            detectViolation('COPY', 'SELECTION_TEXTE', `Target: ${e.target.tagName}`);
+            e.preventDefault();
+            return false;
         }, true);
 
-        // 3. CLAVIER CONFORME CONFIG CLIENT
+        // 3. CLAVIER - DÉTECTION GLOBALE
         document.addEventListener('keydown', function(e) {
-            if (e.target.closest('iframe')) return; // Autoriser dans iframe
-            
-            const key = e.key?.toUpperCase() || '';
+            const key = e.key ? e.key.toUpperCase() : '';
             const keyCode = e.keyCode;
             
-            addDebugLog(`Touche: ${key} (${keyCode})`, 'info');
+            addDebugLog(`⌨️ Touche: ${key} (${keyCode})`);
             
-            // PRINT SCREEN CODES ÉTENDUS
+            // PRINT SCREEN - TOUJOURS BLOQUÉ
             const printScreenCodes = [44, 42, 124, 183, 316, 317];
-            if (key === 'PRINTSCREEN' || 
-                printScreenCodes.includes(keyCode) ||
-                (key === 'Unidentified' && keyCode > 40 && keyCode < 200)) {
-                
-                const isFirst = firstPrintScreenDetection;
-                if (firstPrintScreenDetection) {
-                    firstPrintScreenDetection = false;
-                }
-                
+            if (key === 'PRINTSCREEN' || printScreenCodes.includes(keyCode)) {
+                addDebugLog('🚨 Print Screen détecté !');
+                detectViolation('CAPTURE', 'PRINT_SCREEN', `Key: ${key}, Code: ${keyCode}`);
                 e.preventDefault();
-                detectViolation('CAPTURE', 'PRINT_SCREEN', `Key: ${key}, Code: ${keyCode}`, isFirst);
                 return false;
             }
             
-            // F11 CAPTURE SÉLECTION (CONFIG CLIENT)
+            // F11 - CAPTURE SÉLECTION
             if (key === 'F11' || keyCode === 122) {
+                addDebugLog('🚨 F11 capture détecté !');
+                detectViolation('CAPTURE', 'F11_CAPTURE', `Key: ${key}`);
                 e.preventDefault();
-                detectViolation('CAPTURE', 'F11_CAPTURE', `Key: ${key}, Code: ${keyCode}`, true);
                 return false;
             }
             
-            // CTRL+S CAPTURE (CONFIG CLIENT)
+            // CTRL+S - CAPTURE
             if (e.ctrlKey && (key === 'S' || keyCode === 83)) {
+                addDebugLog('🚨 Ctrl+S capture détecté !');
+                detectViolation('CAPTURE', 'CTRL_S_CAPTURE', `Key: ${key}`);
                 e.preventDefault();
-                detectViolation('CAPTURE', 'CTRL_S_CAPTURE', `Key: ${key}, Code: ${keyCode}`, true);
                 return false;
             }
             
             // OUTILS DÉVELOPPEUR
-            if (key === 'F12' || 
-                keyCode === 123 ||
+            if (key === 'F12' || keyCode === 123 ||
                 (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(key)) ||
                 (e.ctrlKey && key === 'U')) {
                 
-                const isFirst = firstDevToolsDetection;
-                if (firstDevToolsDetection) {
-                    firstDevToolsDetection = false;
-                }
-                
+                addDebugLog('🚨 DevTools détecté !');
+                detectViolation('DEV', 'OUTILS_DEVELOPPEUR', `Key: ${key}, Code: ${keyCode}`);
                 e.preventDefault();
-                detectViolation('DEV', 'OUTILS_DEVELOPPEUR', `Key: ${key}, Code: ${keyCode}`, isFirst);
                 return false;
             }
             
-            // COPIE HORS IFRAME
+            // COPIE - AUTORISER uniquement dans champs de saisie
             if (e.ctrlKey && ['C', 'A', 'V', 'X'].includes(key)) {
                 if (!e.target.matches('input, textarea')) {
+                    addDebugLog('🚨 Copie hors champ détectée !');
                     detectViolation('COPY', `CTRL_${key}`, `Target: ${e.target.tagName}`);
+                    e.preventDefault();
+                    return false;
+                } else {
+                    addDebugLog('✅ Copie autorisée: champ de saisie');
                 }
             }
         }, true);
 
         // 4. DÉTECTION DEVTOOLS PAR DIMENSIONS
-        function detectDevTools() {
+        function detectDevToolsBySize() {
             const threshold = 150;
-            if (window.outerHeight - window.innerHeight > threshold || 
-                window.outerWidth - window.innerWidth > threshold) {
-                addDebugLog('DevTools dimensions détectées', 'warning');
-                detectViolation('DEV', 'DEVTOOLS_DIMENSIONS', `Taille: ${window.outerWidth}x${window.outerHeight}`);
+            const widthDiff = window.outerWidth - window.innerWidth;
+            const heightDiff = window.outerHeight - window.innerHeight;
+            
+            if (widthDiff > threshold || heightDiff > threshold) {
+                addDebugLog('🚨 DevTools par dimensions détecté !');
+                detectViolation('DEV', 'DEVTOOLS_DIMENSIONS', `Diff: ${widthDiff}x${heightDiff}`);
             }
         }
 
-        // ============== INITIALISATION CONFORME RAPPORT ==============
-        window.addEventListener('load', function() {
-            addDebugLog('Initialisation système PIVAR...', 'info');
-            
-            if (handleDevicePolicy()) {
-                addDebugLog('Politique device: AUTORISÉ', 'success');
-                addDebugLog(`Session: ${sessionData.id}`, 'info');
-                addDebugLog('Détections actives: ✓', 'success');
-                
-                // Surveillance DevTools
-                setInterval(detectDevTools, 3000);
-                
-                // Test initial Zapier
-                sendToZapierImmediate({
-                    type: 'SESSION_START',
-                    method: 'INIT',
-                    details: 'Session démarrée - système validé'
-                });
-                
-                addDebugLog('✅ Système opérationnel', 'success');
-            } else {
-                addDebugLog('Politique device: BLOQUÉ', 'error');
+        // 5. CHANGEMENT DE FOCUS (possible capture)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                addDebugLog('👁️ Page cachée - capture possible');
+                detectViolation('SUSPECT', 'PAGE_CACHEE', 'Changement onglet/application');
             }
         });
 
-        // MESSAGES CONSOLE CONFORMES RAPPORT
-        console.log('%c🔍 SYSTÈME PIVAR AUDIT VALIDÉ', 'color: #28a745; font-size: 16px; font-weight: bold;');
-        console.log('%c📋 RGPD Article 6.1.f - Base légale conforme', 'color: #856404; font-size: 12px;');
-        console.log('%c🎯 Escalade 5 violations: 10s→15s→20s→25s→30s', 'color: #3498db; font-size: 12px;');
+        // ============== INITIALISATION ==============
+        window.addEventListener('load', function() {
+            addDebugLog('✅ Système PIVAR chargé');
+            
+            // Test initial Zapier
+            sendToZapierImmediate({
+                type: 'SESSION_START',
+                method: 'INIT',
+                details: 'Session démarrée'
+            });
+            
+            // Surveillance DevTools toutes les 3 secondes
+            setInterval(detectDevToolsBySize, 3000);
+            
+            addDebugLog('🔍 Détections actives - testez !');
+            
+            console.log('🔍 PIVAR MODE RÉUSSITE - DÉTECTIONS ACTIVES');
+            console.log('Session:', sessionData.id);
+            console.log('Testez: Clic droit, Ctrl+C, Print Screen, F12...');
+        });
+
+        // MESSAGES CONSOLE
+        console.log('%c🚫 SESSION PIVAR SURVEILLÉE', 'color: #dc3545; font-size: 20px; font-weight: bold;');
+        console.log('%c🏆 Mode de Réussite - 7/7', 'color: #ffc107; font-size: 16px;');
+        console.log('%c📋 5 violations max: 10s→15s→20s→25s→30s', 'color: #28a745; font-size: 12px;');
 
     </script>
 </body>
